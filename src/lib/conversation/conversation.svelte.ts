@@ -4,6 +4,7 @@ export const conversation = $state({
   messages: [] as Message[],
   agentId: null as string | null,
   cwd: "",
+  ready: false,
   busy: false,
   stopping: false,
   error: "",

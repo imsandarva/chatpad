@@ -16,6 +16,7 @@ Format: [Keep a Changelog](https://keepachangelog.com/). Versioning is informal 
 - Send streams a local Cursor agent reply into the transcript (`Agent.create` / `agent.send`).
 - Stop cancels the in-flight run (`run.cancel()`) and keeps whatever text already arrived.
 - Settings in the header, with a Markdown switch for formatted or raw replies.
+- The thread and agent id for each folder are kept locally, so closing the window does not wipe the day.
 
 ### Fixed
 

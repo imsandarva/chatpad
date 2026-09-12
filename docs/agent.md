@@ -29,7 +29,7 @@ Stop writes a cancel line to the host. The host calls `run.cancel()`. The stream
 
 The transcript shows the **text** of a reply and the **work** behind it — shell, edits, reads, and the rest — as short lines in that turn. The host keeps the raw tool payloads; the page only gets a label and a short detail.
 
-Pictures ride with the send. The thread is still only in this window; closing it clears the day. That is on [next steps](./next_steps.md).
+Pictures ride with the send. The thread and the agent id for this folder are written locally, so the next open can resume instead of starting over.
 
 ## Account
 

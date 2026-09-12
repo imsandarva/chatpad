@@ -3,8 +3,10 @@ import { listen, type UnlistenFn } from "@tauri-apps/api/event";
 import { auth } from "$lib/auth/session.svelte";
 import { toPayload, type DraftPic } from "$lib/composer/images";
 import { addAssistant, addUser, appendDelta, applyWork, conversation, failAssistant, settleStopped } from "$lib/conversation/conversation.svelte";
+import { flush, note, openFolder } from "$lib/conversation/persist";
+import { rememberPics } from "$lib/conversation/store";
 import { isNativeShell } from "$lib/platform";
-import { workspace } from "$lib/workspace/workspace.svelte";
+import { loadWorkspace, workspace } from "$lib/workspace/workspace.svelte";
 
 type HostEvent =
   | { type: "start"; agentId: string }
@@ -20,6 +22,7 @@ function apply(event: HostEvent) {
   else if (event.type === "work") applyWork({ id: event.id, name: event.name, label: event.label, detail: event.detail, status: event.status });
   else if (event.type === "error") failAssistant(event.message);
   else if (event.type === "cancelled") settleStopped();
+  note();
 }
 
 export async function startAgentListener(): Promise<UnlistenFn> {
@@ -28,29 +31,25 @@ export async function startAgentListener(): Promise<UnlistenFn> {
 }
 
 export async function sendPrompt(prompt: string, pics: DraftPic[] = []) {
+  await loadWorkspace();
+  await openFolder(workspace.cwd);
   conversation.busy = true;
   conversation.stopping = false;
   conversation.error = "";
-  if (conversation.cwd !== workspace.cwd) {
-    conversation.agentId = null;
-    conversation.cwd = workspace.cwd;
-  }
-
+  if (pics.length) await rememberPics(pics);
   addUser(prompt, pics.map(({ id, name, mime, url }) => ({ id, name, mime, url })));
   addAssistant();
-
-  if (!isNativeShell()) {
-    failAssistant("Open the Chatpad window to send.");
-    conversation.busy = false;
-    return;
-  }
-  if (auth.session.status !== "logged-in") {
-    failAssistant("Sign in first — then send.");
-    conversation.busy = false;
-    return;
-  }
+  note();
 
   try {
+    if (!isNativeShell()) {
+      failAssistant("Open the Chatpad window to send.");
+      return;
+    }
+    if (auth.session.status !== "logged-in") {
+      failAssistant("Sign in first — then send.");
+      return;
+    }
     const images = pics.length ? await toPayload(pics) : [];
     await invoke("cursor_send", { prompt, cwd: workspace.cwd, agentId: conversation.agentId, images });
   } catch {
@@ -59,6 +58,7 @@ export async function sendPrompt(prompt: string, pics: DraftPic[] = []) {
   } finally {
     conversation.busy = false;
     conversation.stopping = false;
+    await flush();
   }
 }
 

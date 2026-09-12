@@ -2,7 +2,7 @@
   import type { Message } from "$lib/types/message";
   import Turn from "./Turn.svelte";
 
-  let { messages, busy = false }: { messages: Message[]; busy?: boolean } = $props();
+  let { messages, busy = false, ready = true }: { messages: Message[]; busy?: boolean; ready?: boolean } = $props();
 
   let pane: HTMLElement | undefined = $state();
   const pendingId = $derived(busy ? messages.findLast((message) => message.role === "assistant")?.id : undefined);
@@ -18,7 +18,9 @@
 </script>
 
 <section class="transcript" aria-label="Conversation" bind:this={pane}>
-  {#if messages.length === 0}
+  {#if !ready}
+    <div class="empty wait" aria-hidden="true"></div>
+  {:else if messages.length === 0}
     <div class="empty">
       <span class="mark" aria-hidden="true"></span>
       <h1>The page is empty.</h1>
@@ -41,6 +43,10 @@
     contain: content;
     scrollbar-width: thin;
     scrollbar-color: var(--line) transparent;
+  }
+
+  .empty.wait {
+    animation: none;
   }
 
   .empty {

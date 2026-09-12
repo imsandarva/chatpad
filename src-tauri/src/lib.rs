@@ -4,6 +4,7 @@ mod cursor;
 mod host;
 mod paths;
 mod pictures;
+mod thread;
 mod workspace;
 
 use tauri::Manager;
@@ -27,7 +28,9 @@ pub fn run() {
             workspace::default_workspace,
             workspace::pick_workspace,
             pictures::read_pictures,
-            pictures::clipboard_attach
+            pictures::clipboard_attach,
+            thread::thread_load,
+            thread::thread_save
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

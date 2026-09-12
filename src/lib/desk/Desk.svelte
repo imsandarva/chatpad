@@ -5,9 +5,11 @@
   import Composer from "$lib/composer/Composer.svelte";
   import type { DraftPic } from "$lib/composer/images";
   import { conversation } from "$lib/conversation/conversation.svelte";
+  import { openFolder, startPersistence } from "$lib/conversation/persist";
   import Transcript from "$lib/transcript/Transcript.svelte";
   import Settings from "$lib/settings/Settings.svelte";
   import Folder from "$lib/workspace/Folder.svelte";
+  import { workspace } from "$lib/workspace/workspace.svelte";
   import { onMount } from "svelte";
 
   let draft = $state("");
@@ -15,8 +17,15 @@
 
   onMount(() => {
     let stop = () => {};
+    let stopPersist = () => {};
     void startAgentListener().then((unlisten) => { stop = unlisten; });
-    return () => stop();
+    void startPersistence().then((unlisten) => { stopPersist = unlisten; });
+    return () => { stop(); stopPersist(); };
+  });
+
+  $effect(() => {
+    if (!workspace.ready) return;
+    void openFolder(workspace.cwd);
   });
 
   function send() {
@@ -34,7 +43,7 @@
     {#snippet start()}<Folder />{/snippet}
     {#snippet end()}<Settings /><Account />{/snippet}
   </Header>
-  <Transcript messages={conversation.messages} busy={conversation.busy} />
+  <Transcript messages={conversation.messages} busy={conversation.busy} ready={conversation.ready} />
   <Composer bind:value={draft} bind:pics disabled={conversation.busy} stopping={conversation.stopping} onsend={send} onstop={() => void stopPrompt()} />
 </div>
 

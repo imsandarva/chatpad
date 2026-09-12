@@ -12,7 +12,7 @@ The key stays in `~/.cursor/sdk/auth.json`. Chatpad only keeps your name and ema
 
 The header button is the project folder. It starts as this repo. Click it to pick another.
 
-That folder is the agent’s working directory — same idea as opening a project in the CLI. A new folder starts a new agent. The same folder, in the same window, keeps the thread going.
+That folder is the agent’s working directory — same idea as opening a project in the CLI. Each folder has its own thread. The same folder, next time you open the window, picks up where you left off. You cannot change folders while a reply is still coming.
 
 ## Write
 
@@ -35,4 +35,4 @@ While a reply is coming in, the box waits and Send becomes Stop. Commands and fi
 
 ## Closing the window
 
-The thread lives in this window only. Closing it clears the page. Sign-in, the folder, and the Markdown switch come back.
+The thread for this folder comes back when you open the window. Sign-in, the folder, and the Markdown switch do too.

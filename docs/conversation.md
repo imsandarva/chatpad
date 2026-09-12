@@ -42,4 +42,4 @@ Cursor’s replies can render as Markdown (see [usage](./usage.md)). Yours do no
 
 ## Memory
 
-The thread is in this window’s memory. It is not written to disk. A new folder in the same window starts a new agent; the old bubbles stay on the page until you close the window. Keeping the thread across days is still ahead — see [next steps](./next_steps.md).
+Each folder keeps its own thread — the words, the pictures, and the agent behind them. Close the window and open it again: that folder’s day is still here. Pick another folder and you get that folder’s thread, or a blank page if you have not written there yet.

@@ -28,10 +28,14 @@ async function defaultCwd(): Promise<string> {
   try { return await invoke<string>("default_workspace"); } catch { return FALLBACK_CWD; }
 }
 
-export async function loadWorkspace() {
-  const stored = (() => { try { return localStorage.getItem(STORAGE_KEY); } catch { return null; } })();
-  persist(stored || await defaultCwd());
-  workspace.ready = true;
+let loading: Promise<void> | undefined;
+
+export function loadWorkspace(): Promise<void> {
+  return loading ??= (async () => {
+    const stored = (() => { try { return localStorage.getItem(STORAGE_KEY); } catch { return null; } })();
+    persist(stored || await defaultCwd());
+    workspace.ready = true;
+  })();
 }
 
 export async function pickFolder() {
