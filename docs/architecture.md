@@ -33,7 +33,9 @@ Not used: Electron, Python/GTK for the app, Flutter (no first-party Cursor SDK).
 | `src/lib/auth/` | Sign-in control, remembered name, session state |
 | `src/lib/workspace/` | Stored project folder (`cwd` for the agent) |
 | `host/` | Durable Node host — login, one live `Agent`, `send` / `run.cancel()` |
-| `src/lib/transcript/` | Conversation pane |
+| `src/lib/transcript/` | Conversation pane (raw or markdown) |
+| `src/lib/settings/` | Settings sheet — markdown on/off for now |
+| `src/lib/markdown/` | Safe markdown render (`marked` + DOMPurify) |
 | `src/lib/agent/` | Send, Stop, and stream listener |
 | `src/lib/conversation/` | Transcript messages and agent id |
 | `src/lib/composer/` | Writing well |
@@ -47,7 +49,7 @@ Not used: Electron, Python/GTK for the app, Flutter (no first-party Cursor SDK).
 
 App id: `com.chatpad.app`. Window title: Chatpad.
 
-The UI is a composition layer: routes wire modules, modules own one pane. Login, folder, Send, and Stop are wired.
+The UI is a composition layer: routes wire modules, modules own one pane. Login, folder, Send, Stop, and Settings are wired. Settings is a native dialog. Markdown is on by default for assistant replies; turning it off shows the raw text.
 
 The window starts one Node host and keeps it. The first send creates (or resumes) a local agent; later sends call `agent.send()` on that same handle — the CLI shape. Tokens come back as NDJSON, Rust emits `agent-event`, and the transcript appends them. A folder change disposes and opens a new agent. Closing the agent after every turn was what made replies feel slower than the CLI.
 
@@ -61,6 +63,7 @@ Stop writes a cancel line to the host’s stdin (Escape does the same). The host
 - `@tauri-apps/cli`, `@tauri-apps/api`, `@tauri-apps/plugin-opener`
 - `tauri-plugin-dialog` — native folder picker (Rust; UI invokes `pick_workspace`)
 - Svelte 5, SvelteKit, Vite, TypeScript
+- `marked`, `dompurify` — formatted replies, sanitized
 - `tauri` 2, `serde` (Rust)
 
 **Machine**

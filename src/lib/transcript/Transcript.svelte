@@ -1,5 +1,7 @@
 <script lang="ts">
+  import { settings } from "$lib/settings/settings.svelte";
   import type { Message } from "$lib/types/message";
+  import Body from "./Body.svelte";
 
   let { messages, busy = false }: { messages: Message[]; busy?: boolean } = $props();
 
@@ -25,7 +27,13 @@
       {#each messages as message (message.id)}
         <li class="turn" data-role={message.role} data-pending={message.id === pendingId} data-failed={message.failed} data-stopped={message.stopped}>
           <span class="who">{message.role === "user" ? "You" : "Chatpad"}</span>
-          <p class:quiet={Boolean(message.stopped && !message.text)}>{message.text || (message.stopped ? "You stopped this reply." : "")}</p>
+          <Body
+            text={message.text || (message.stopped ? "You stopped this reply." : "")}
+            markdown={settings.markdown && message.role === "assistant" && Boolean(message.text)}
+            pending={message.id === pendingId}
+            quiet={Boolean(message.stopped && !message.text)}
+            failed={Boolean(message.failed)}
+          />
         </li>
       {/each}
     </ol>
@@ -103,32 +111,6 @@
     color: var(--ink-soft);
   }
 
-  .turn p {
-    margin: 0;
-    max-width: none;
-    font-size: 0.96875rem;
-    line-height: 1.6;
-    color: var(--ink);
-    text-align: left;
-    white-space: pre-wrap;
-    overflow-wrap: anywhere;
-  }
-
-  .turn[data-failed="true"] p {
-    color: var(--danger);
-  }
-
-  .turn p.quiet {
-    color: var(--ink-soft);
-  }
-
-  .turn[data-pending="true"] p::after {
-    content: "▍";
-    margin-left: 0.12em;
-    opacity: 0.4;
-    animation: blink 1s step-end infinite;
-  }
-
   @keyframes rise {
     from {
       opacity: 0;
@@ -140,7 +122,4 @@
     }
   }
 
-  @keyframes blink {
-    50% { opacity: 0; }
-  }
 </style>

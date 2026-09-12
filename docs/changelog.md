@@ -15,6 +15,7 @@ Format: [Keep a Changelog](https://keepachangelog.com/). Versioning is informal 
 - Stored project folder in the header (defaults to this repo; native picker can change it).
 - Send streams a local Cursor agent reply into the transcript (`Agent.create` / `agent.send`).
 - Stop cancels the in-flight run (`run.cancel()`) and keeps whatever text already arrived.
+- Settings in the header, with a Markdown switch for formatted or raw replies.
 
 ### Changed
 
