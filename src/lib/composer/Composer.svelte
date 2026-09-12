@@ -1,7 +1,19 @@
 <script lang="ts">
   import { autosize } from "./autosize";
 
-  let { value = $bindable(""), disabled = false, onsend }: { value: string; disabled?: boolean; onsend: () => void } = $props();
+  let {
+    value = $bindable(""),
+    disabled = false,
+    stopping = false,
+    onsend,
+    onstop,
+  }: {
+    value: string;
+    disabled?: boolean;
+    stopping?: boolean;
+    onsend: () => void;
+    onstop: () => void;
+  } = $props();
 
   const canSend = $derived(!disabled && value.trim().length > 0);
 
@@ -17,6 +29,18 @@
       submit();
     }
   }
+
+  $effect(() => {
+    if (!disabled) return;
+    const onkey = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && !stopping) {
+        event.preventDefault();
+        onstop();
+      }
+    };
+    window.addEventListener("keydown", onkey);
+    return () => window.removeEventListener("keydown", onkey);
+  });
 </script>
 
 <form class="dock" onsubmit={submit}>
@@ -35,7 +59,11 @@
       onkeydown={onkeydown}
     ></textarea>
     <div class="bar">
-      <button type="submit" disabled={!canSend}>{disabled ? "Sending" : "Send"}</button>
+      {#if disabled}
+        <button type="button" class="stop" disabled={stopping} aria-label="Stop this reply" onclick={onstop}>{stopping ? "Stopping" : "Stop"}</button>
+      {:else}
+        <button type="submit" disabled={!canSend}>Send</button>
+      {/if}
     </div>
   </div>
 </form>
@@ -91,6 +119,10 @@
   }
 
   button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
     height: 2rem;
     padding: 0 0.9rem;
     border: 0;
@@ -102,6 +134,14 @@
     letter-spacing: 0.01em;
     cursor: pointer;
     transition: transform 0.12s var(--ease), opacity 0.16s var(--ease), background-color 0.16s var(--ease);
+  }
+
+  .stop::before {
+    content: "";
+    width: 0.42rem;
+    height: 0.42rem;
+    border-radius: 0.08rem;
+    background: currentColor;
   }
 
   button:hover:not(:disabled) {

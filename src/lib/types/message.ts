@@ -5,4 +5,5 @@ export type Message = {
   role: Role;
   text: string;
   failed?: boolean;
+  stopped?: boolean;
 };

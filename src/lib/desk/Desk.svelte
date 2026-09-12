@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { sendPrompt, startAgentListener } from "$lib/agent/chat";
+  import { sendPrompt, startAgentListener, stopPrompt } from "$lib/agent/chat";
   import Account from "$lib/auth/Account.svelte";
   import Header from "$lib/chrome/Header.svelte";
   import Composer from "$lib/composer/Composer.svelte";
@@ -30,7 +30,7 @@
     {#snippet end()}<Account />{/snippet}
   </Header>
   <Transcript messages={conversation.messages} busy={conversation.busy} />
-  <Composer bind:value={draft} disabled={conversation.busy} onsend={send} />
+  <Composer bind:value={draft} disabled={conversation.busy} stopping={conversation.stopping} onsend={send} onstop={() => void stopPrompt()} />
 </div>
 
 <style>

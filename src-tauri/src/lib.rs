@@ -8,8 +8,10 @@ pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_dialog::init())
+        .manage(agent::LiveRun::default())
         .invoke_handler(tauri::generate_handler![
             agent::cursor_send,
+            agent::cursor_stop,
             cursor::cursor_session,
             workspace::default_workspace,
             workspace::pick_workspace

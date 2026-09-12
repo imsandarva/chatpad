@@ -5,6 +5,7 @@ export const conversation = $state({
   agentId: null as string | null,
   cwd: "",
   busy: false,
+  stopping: false,
   error: "",
 });
 
@@ -35,7 +36,13 @@ export function appendDelta(text: string) {
 
 export function failAssistant(text: string) {
   const turn = lastAssistant();
-  if (!turn) return;
+  if (!turn || turn.stopped) return;
   turn.failed = true;
   if (!turn.text) turn.text = text;
+}
+
+/** Keep what arrived; the transcript writes a quiet note if nothing did. */
+export function settleStopped() {
+  const turn = lastAssistant();
+  if (turn) turn.stopped = true;
 }

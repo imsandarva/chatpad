@@ -1,4 +1,5 @@
 import { Agent, CursorAgentError } from "@cursor/sdk";
+import type { StopGate } from "./control.ts";
 
 export type SendRequest = {
   prompt: string;
@@ -10,6 +11,7 @@ export type HostEvent =
   | { type: "start"; agentId: string }
   | { type: "delta"; text: string }
   | { type: "done"; agentId: string }
+  | { type: "cancelled"; agentId: string }
   | { type: "error"; message: string };
 
 const model = { id: "composer-2.5" } as const;
@@ -38,13 +40,23 @@ async function openAgent(cwd: string, agentId?: string | null) {
   }
 }
 
-/** Create or resume a local agent, stream text, then dispose. */
-export async function send(req: SendRequest) {
+async function cancelRun(run: { supports: (op: "cancel") => boolean; cancel: () => Promise<void> }) {
+  if (run.supports("cancel")) await run.cancel();
+}
+
+/** Create or resume a local agent, stream text, honour Stop, then dispose. */
+export async function send(req: SendRequest, stop: StopGate) {
   let agent;
   try {
     agent = await openAgent(req.cwd, req.agentId);
   } catch (err) {
     emit({ type: "error", message: human(err) });
+    return;
+  }
+
+  if (stop.requested) {
+    agent.close();
+    emit({ type: "cancelled", agentId: agent.agentId });
     return;
   }
 
@@ -60,7 +72,16 @@ export async function send(req: SendRequest) {
         }
       },
     });
+
+    const halt = () => { void cancelRun(run); };
+    if (stop.requested) halt();
+    else void stop.when.then(halt);
+
     const result = await run.wait();
+    if (result.status === "cancelled" || stop.requested) {
+      emit({ type: "cancelled", agentId: agent.agentId });
+      return;
+    }
     if (result.status === "error") {
       emit({ type: "error", message: result.error?.message || "The reply didn’t finish." });
       return;
@@ -68,7 +89,8 @@ export async function send(req: SendRequest) {
     if (!streamed && result.result) emit({ type: "delta", text: result.result });
     emit({ type: "done", agentId: agent.agentId });
   } catch (err) {
-    emit({ type: "error", message: human(err) });
+    if (stop.requested) emit({ type: "cancelled", agentId: agent.agentId });
+    else emit({ type: "error", message: human(err) });
   } finally {
     agent.close();
   }

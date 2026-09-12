@@ -23,9 +23,9 @@
   {:else}
     <ol class="thread">
       {#each messages as message (message.id)}
-        <li class="turn" data-role={message.role} data-pending={message.id === pendingId} data-failed={message.failed}>
+        <li class="turn" data-role={message.role} data-pending={message.id === pendingId} data-failed={message.failed} data-stopped={message.stopped}>
           <span class="who">{message.role === "user" ? "You" : "Chatpad"}</span>
-          <p>{message.text}</p>
+          <p class:quiet={Boolean(message.stopped && !message.text)}>{message.text || (message.stopped ? "You stopped this reply." : "")}</p>
         </li>
       {/each}
     </ol>
@@ -116,6 +116,10 @@
 
   .turn[data-failed="true"] p {
     color: var(--danger);
+  }
+
+  .turn p.quiet {
+    color: var(--ink-soft);
   }
 
   .turn[data-pending="true"] p::after {

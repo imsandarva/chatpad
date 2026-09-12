@@ -14,6 +14,7 @@ Format: [Keep a Changelog](https://keepachangelog.com/). Versioning is informal 
 - Cursor login in the header (`Cursor.auth.login()` via the Node host); shows who you are.
 - Stored project folder in the header (defaults to this repo; native picker can change it).
 - Send streams a local Cursor agent reply into the transcript (`Agent.create` / `agent.send`).
+- Stop cancels the in-flight run (`run.cancel()`) and keeps whatever text already arrived.
 
 ### Changed
 

@@ -32,9 +32,9 @@ Not used: Electron, Python/GTK for the app, Flutter (no first-party Cursor SDK).
 | `src/lib/chrome/` | Window chrome (wordmark, shared header controls) |
 | `src/lib/auth/` | Sign-in control and session state |
 | `src/lib/workspace/` | Stored project folder (`cwd` for the agent) |
-| `host/` | Node host — login and `Agent.create` / `send` stream |
+| `host/` | Node host — login, `Agent.create` / `send` stream, and `run.cancel()` |
 | `src/lib/transcript/` | Conversation pane |
-| `src/lib/agent/` | Send + stream listener |
+| `src/lib/agent/` | Send, Stop, and stream listener |
 | `src/lib/conversation/` | Transcript messages and agent id |
 | `src/lib/composer/` | Writing well |
 | `src/lib/types/` | Shared shapes |
@@ -45,9 +45,11 @@ Not used: Electron, Python/GTK for the app, Flutter (no first-party Cursor SDK).
 
 App id: `com.chatpad.app`. Window title: Chatpad.
 
-The UI is a composition layer: routes wire modules, modules own one pane. Login, folder, and Send are wired.
+The UI is a composition layer: routes wire modules, modules own one pane. Login, folder, Send, and Stop are wired.
 
 Send runs `Agent.create({ local: { cwd } })` (or `Agent.resume`) in the Node host. Tokens come back as NDJSON, Rust emits `agent-event`, and the transcript appends them. Follow-ups reuse the same agent id for that folder.
+
+Stop writes a cancel line to the live host’s stdin (Escape does the same). The host calls `run.cancel()` on the official handle, the stream ends with `cancelled`, and partial text stays. Rust holds that stdin only while a send is active.
 
 ## Runtime dependencies
 
