@@ -1,4 +1,5 @@
 mod agent;
+mod auth_store;
 mod cursor;
 mod paths;
 mod workspace;

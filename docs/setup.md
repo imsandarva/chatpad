@@ -38,7 +38,7 @@ npm run tauri dev
 
 `cargo check` in `src-tauri/` should pass. The window is a two-pane desk: transcript above, composer below. Sign in, pick a folder, write, and Send. Replies stream into the transcript from the local Cursor agent. Stop (or Escape) ends a reply that is still coming.
 
-Login stores a key at `~/.cursor/sdk/auth.json`. The UI never sees that key.
+Login stores a key at `~/.cursor/sdk/auth.json`. The UI never sees that key. The next open reads that file locally and shows who you are without waiting.
 
 ## Status
 

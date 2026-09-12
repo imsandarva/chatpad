@@ -13,20 +13,21 @@ function displayName(email?: string, first?: string, last?: string): string {
 export async function readSession(): Promise<Session> {
   const status = await Cursor.auth.status();
   if (status.status !== "logged-in") return { status: "logged-out" };
-
-  try {
-    const me = await Cursor.me();
-    const email = me.userEmail ?? status.email ?? "";
-    return { status: "logged-in", email, name: displayName(email, me.userFirstName, me.userLastName) };
-  } catch {
-    const email = status.email ?? "";
-    return { status: "logged-in", email, name: displayName(email) };
-  }
+  const email = status.email ?? "";
+  return { status: "logged-in", email, name: displayName(email) };
 }
 
 export async function login(): Promise<Session> {
   await Cursor.auth.login({ apiKeyName: "Chatpad" });
-  return readSession();
+  const session = await readSession();
+  if (session.status !== "logged-in") return session;
+  try {
+    const me = await Cursor.me();
+    const email = me.userEmail ?? session.email;
+    return { status: "logged-in", email, name: displayName(email, me.userFirstName, me.userLastName) };
+  } catch {
+    return session;
+  }
 }
 
 export async function logout(): Promise<Session> {

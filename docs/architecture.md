@@ -9,7 +9,7 @@ composer / transcript  →  Tauri invoke  →  host/ (Node)  →  @cursor/sdk  �
          Tauri 2 + WebKitGTK
 ```
 
-The UI owns input and display. The host is the only process that imports `@cursor/sdk` — WebKit cannot run it. Credentials stay in `~/.cursor/sdk/auth.json`; the UI receives name and email only. Cursor owns the agent. Usage bills to the same plan as the IDE and CLI.
+The UI owns input and display. The host is the only process that imports `@cursor/sdk` — WebKit cannot run it. Credentials stay in `~/.cursor/sdk/auth.json`; the UI receives name and email only. Status on launch is a local read of that file (no Node, no network). Login and logout still go through the host. Cursor owns the agent. Usage bills to the same plan as the IDE and CLI.
 
 ## Why this stack
 
@@ -30,7 +30,7 @@ Not used: Electron, Python/GTK for the app, Flutter (no first-party Cursor SDK).
 | `src/routes/+page.svelte` | Thin entry — mounts the desk |
 | `src/lib/desk/` | Composes header, transcript, composer |
 | `src/lib/chrome/` | Window chrome (wordmark, shared header controls) |
-| `src/lib/auth/` | Sign-in control and session state |
+| `src/lib/auth/` | Sign-in control, remembered name, session state |
 | `src/lib/workspace/` | Stored project folder (`cwd` for the agent) |
 | `host/` | Node host — login, `Agent.create` / `send` stream, and `run.cancel()` |
 | `src/lib/transcript/` | Conversation pane |
@@ -40,6 +40,7 @@ Not used: Electron, Python/GTK for the app, Flutter (no first-party Cursor SDK).
 | `src/lib/types/` | Shared shapes |
 | `src/app.css` | Tokens and reset |
 | `src-tauri/` | Native window (Rust crate `chatpad` / `chatpad_lib`) |
+| `src-tauri/src/auth_store.rs` | Local `auth.json` status — no key leaves the file |
 | `node_modules/` | JS/TS packages from `npm install` |
 | `src-tauri/target/` | Rust build output |
 

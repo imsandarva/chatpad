@@ -18,7 +18,7 @@
     <ChromeButton disabled={auth.busy} onclick={() => void signOut()}>Sign out</ChromeButton>
   {:else}
     <ChromeButton disabled={auth.busy} onclick={() => void signIn()}>
-      {auth.busy ? "Waiting for Cursor…" : "Sign in"}
+      {auth.waiting ? "Waiting for Cursor…" : "Sign in"}
     </ChromeButton>
   {/if}
 </div>

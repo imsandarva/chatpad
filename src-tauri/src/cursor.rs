@@ -8,8 +8,21 @@ pub enum Session {
     LoggedIn { email: String, name: String },
 }
 
+fn display_name(email: &str) -> String {
+    let local = email.split('@').next().unwrap_or("");
+    if local.is_empty() { "Signed in".into() } else { local.to_string() }
+}
+
+fn local_status() -> Session {
+    match crate::auth_store::current() {
+        Some(who) => { let name = display_name(&who.email); Session::LoggedIn { email: who.email, name } }
+        None => Session::LoggedOut,
+    }
+}
+
 fn run_sync(action: &str) -> Result<Session, String> {
-    if !matches!(action, "status" | "login" | "logout") {
+    if action == "status" { return Ok(local_status()); }
+    if !matches!(action, "login" | "logout") {
         return Err("unknown auth action".into());
     }
 
