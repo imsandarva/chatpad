@@ -35,8 +35,8 @@ Not used: Electron, Python/GTK for the app, Flutter (no first-party Cursor SDK).
 | `src/lib/auth/` | Sign-in control, remembered name, session state |
 | `src/lib/workspace/` | Stored project folder (`cwd` for the agent) |
 | `host/` | Durable Node host — login, one live `Agent`, `send` / `run.cancel()`, work rows |
-| `host/work.ts` | Turns `tool_call` stream events into a short label |
-| `src/lib/transcript/` | Conversation pane — `Transcript` lists, `follow` keeps the latest in view, `Turn` aligns, `Work` shows the steps, `Body` renders |
+| `host/work.ts` | Turns `tool_call` stream events into a label and a detail you can open |
+| `src/lib/transcript/` | Conversation pane — `Transcript` lists, `follow` keeps the latest in view, `Turn` aligns, `Work` shows the steps and opens one a little, `Body` renders |
 | `src/lib/copy/` | Copy a bubble, a work line, or a code block — `write` talks to the clipboard |
 | `src/lib/scroll/` | Thread rail — `Track` draws the bar, `geometry` sizes the handle, `bind` paints on scroll without a render |
 | `src/lib/settings/` | Settings sheet — markdown on/off for now |

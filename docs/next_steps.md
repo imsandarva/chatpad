@@ -10,15 +10,16 @@ The first useful cut is a desk: sign in, pick a folder, write, see the work, Sto
 
 **Copy what arrived.** Hover a bubble, a work line, or a code block. Copy takes the words.
 
+**Open a work line a little.** Tap a command or a file. The words open in place. Not a diff viewer.
+
 ## Do this next
 
-**Open a work line a little.**
+**Pick a model in Settings.**
 
-A command you can sit with. A file name you can reveal. Not a diff viewer. Large diffs still belong in the project.
+The host is pinned to `composer-2.5`. A choice here should feel like the rest of the desk — quiet, not a catalog.
 
 ## Later, if the desk is already a habit
 
-- Pick a model in Settings. The host is pinned to `composer-2.5`.
 - Ship the window (`tauri build`, a `.desktop` file) so it is not a dev loop.
 - See that you are on a Cursor plan, without bringing billing into the header.
 

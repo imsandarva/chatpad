@@ -27,7 +27,7 @@ Stop writes a cancel line to the host. The host calls `run.cancel()`. The stream
 
 ## What you see, what you do not
 
-The transcript shows the **text** of a reply and the **work** behind it — shell, edits, reads, and the rest — as short lines in that turn. The host keeps the raw tool payloads; the page only gets a label and a short detail.
+The transcript shows the **text** of a reply and the **work** behind it — shell, edits, reads, and the rest — as short lines in that turn. The host keeps the raw tool payloads; the page gets a label and enough of the command or path to open a little. Not a diff.
 
 Pictures ride with the send. The thread and the agent id for this folder are written locally, so the next open can resume instead of starting over.
 

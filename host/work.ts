@@ -32,8 +32,9 @@ function str(value: unknown): string {
   return typeof value === "string" ? value.trim() : "";
 }
 
-function clip(value: string, n = 160): string {
-  const text = value.replace(/\s+/g, " ").trim();
+/** Keep enough of a command or path to sit with — not a dump. */
+function keep(value: string, n = 4000): string {
+  const text = value.replace(/\r\n/g, "\n").trim();
   return text.length > n ? `${text.slice(0, n - 1)}…` : text;
 }
 
@@ -71,35 +72,35 @@ function describe(name: string, args: Rec, status: WorkStatus): { label: string;
 
   if (name === "shell") {
     const label = fail ? "That command didn’t finish." : status === "running" ? "Running a command" : "Ran a command";
-    return { label, detail: cmd ? clip(cmd) : undefined };
+    return { label, detail: cmd ? keep(cmd) : undefined };
   }
   if (name === "edit") {
     const label = fail ? `Couldn’t edit ${who || "that file"}` : status === "running" ? `Editing ${who || "a file"}` : `Edited ${who || "a file"}`;
-    return { label, detail: path && path !== who ? clip(path) : undefined };
+    return { label, detail: path ? keep(path) : undefined };
   }
   if (name === "read") {
     const label = fail ? `Couldn’t open ${who || "that file"}` : status === "running" ? `Opening ${who || "a file"}` : `Looked at ${who || "a file"}`;
-    return { label, detail: path && path !== who ? clip(path) : undefined };
+    return { label, detail: path ? keep(path) : undefined };
   }
   if (name === "write") {
     const label = fail ? `Couldn’t write ${who || "that file"}` : status === "running" ? `Writing ${who || "a file"}` : `Wrote ${who || "a file"}`;
-    return { label, detail: path && path !== who ? clip(path) : undefined };
+    return { label, detail: path ? keep(path) : undefined };
   }
   if (name === "delete") {
     const label = fail ? `Couldn’t remove ${who || "that file"}` : status === "running" ? `Removing ${who || "a file"}` : `Removed ${who || "a file"}`;
-    return { label, detail: path && path !== who ? clip(path) : undefined };
+    return { label, detail: path ? keep(path) : undefined };
   }
   if (name === "grep") {
-    return { label: fail ? "Search didn’t finish." : status === "running" ? "Searching the project" : "Searched the project", detail: query ? clip(query) : undefined };
+    return { label: fail ? "Search didn’t finish." : status === "running" ? "Searching the project" : "Searched the project", detail: query ? keep(query) : undefined };
   }
   if (name === "glob") {
-    return { label: fail ? "Couldn’t look for files." : status === "running" ? "Looking for files" : "Looked for files", detail: query ? clip(query) : undefined };
+    return { label: fail ? "Couldn’t look for files." : status === "running" ? "Looking for files" : "Looked for files", detail: query ? keep(query) : undefined };
   }
   if (name === "ls") {
-    return { label: fail ? "Couldn’t list that folder." : status === "running" ? "Listing a folder" : "Listed a folder", detail: path ? clip(path) : undefined };
+    return { label: fail ? "Couldn’t list that folder." : status === "running" ? "Listing a folder" : "Listed a folder", detail: path ? keep(path) : undefined };
   }
   if (name === "search") {
-    return { label: fail ? "Search didn’t finish." : status === "running" ? "Searching the project" : "Searched the project", detail: query ? clip(query) : undefined };
+    return { label: fail ? "Search didn’t finish." : status === "running" ? "Searching the project" : "Searched the project", detail: query ? keep(query) : undefined };
   }
   return { label: fail ? "That step didn’t work." : status === "running" ? "Working" : "Finished" };
 }

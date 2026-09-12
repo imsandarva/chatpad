@@ -6,6 +6,7 @@ Format: [Keep a Changelog](https://keepachangelog.com/). Versioning is informal 
 
 ### Added
 
+- A work line opens a little — sit with the command, or see the path. Not a diff.
 - Copy on a bubble, a work line, or a code block — take the words without fighting the page.
 - The write box stays open while a reply is coming; Send holds the next note until this turn finishes.
 - New starts a fresh conversation in the same folder; Earlier brings the old ones back.

@@ -24,7 +24,7 @@ The names “You” and “Cursor” are there for a screen reader. On the page,
 
 When Cursor runs a command or touches a file, that step appears in the same turn — a quiet line on the left, not a bubble. You see it start, then settle, the way the CLI prints the work before the reply.
 
-A command shows the command. A file shows the name. The reply, if there is one, follows underneath.
+A command shows as a quiet line. A file shows the name. Tap either one and it opens a little — the command you can sit with, or the path you wanted to see. It is not a diff. Large changes still belong in the project. The reply, if there is one, follows underneath.
 
 Hover a bubble, a work line, or a block of code and **Copy** takes the words — the whole note, the command, the file name — so you do not have to fight the page. You can still select a piece and copy that the usual way.
 
