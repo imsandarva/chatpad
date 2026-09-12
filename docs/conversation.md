@@ -30,6 +30,10 @@ A command shows the command. A file shows the name. The reply, if there is one, 
 
 A step that is still running keeps a small pulse. If Cursor is writing, the last bubble stays open and a caret blinks at the end. The thread follows new words down, unless you scroll up to read — then it stays put until you return to the bottom.
 
+## The bar
+
+When the thread is taller than the window, a slim bar sits on the right. How tall the handle is tells you how long the day is. Drag it, or tap anywhere on the bar, to jump — the way a chat on your phone lets you fly back to this morning. Home and End do the same from the keyboard, as long as you are not typing.
+
 ## Stop and fail
 
 **Stop** (or Escape) ends the stream. Whatever already arrived stays. If nothing had arrived yet, the bubble says “You stopped this reply.”

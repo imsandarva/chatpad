@@ -9,6 +9,9 @@ export function follow(node: HTMLElement, _token?: unknown) {
   node.addEventListener("scroll", onscroll, { passive: true });
   const onkey = (event: KeyboardEvent) => {
     if (event.defaultPrevented || event.altKey || event.metaKey || event.ctrlKey) return;
+    if ((event.target as HTMLElement | null)?.closest("input, textarea, select, [contenteditable='true']")) return;
+    if (event.key === "Home") { event.preventDefault(); node.scrollTop = 0; pinned = atEnd(); return; }
+    if (event.key === "End") { event.preventDefault(); node.scrollTop = node.scrollHeight; pinned = atEnd(); return; }
     if (event.key !== "PageUp" && event.key !== "PageDown") return;
     event.preventDefault();
     node.scrollTop += (event.key === "PageDown" ? 1 : -1) * node.clientHeight * 0.9;

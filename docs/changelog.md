@@ -6,6 +6,7 @@ Format: [Keep a Changelog](https://keepachangelog.com/). Versioning is informal 
 
 ### Added
 
+- A slim bar on the thread when the day runs long — tap or drag to jump, Home and End to the ends.
 - Tauri 2 + SvelteKit + TypeScript scaffold (`com.chatpad.app`).
 - `@cursor/sdk` as a project dependency (not wired to the UI yet).
 - Isolated toolchain: nvm Node 22, rustup 1.98, apt WebKit/GTK `-dev` packages.

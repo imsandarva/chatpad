@@ -1,44 +1,60 @@
 <script lang="ts">
+  import Track from "$lib/scroll/Track.svelte";
   import type { Message } from "$lib/types/message";
   import { follow } from "./follow";
   import Turn from "./Turn.svelte";
 
   let { messages, busy = false, ready = true }: { messages: Message[]; busy?: boolean; ready?: boolean } = $props();
 
+  let port: HTMLElement | undefined = $state();
   const pendingId = $derived(busy ? messages.findLast((message) => message.role === "assistant")?.id : undefined);
 </script>
 
-<section class="transcript" aria-label="Conversation" use:follow={messages.length}>
-  {#if !ready}
-    <div class="empty wait" aria-hidden="true"></div>
-  {:else if messages.length === 0}
-    <div class="empty">
-      <span class="mark" aria-hidden="true"></span>
-      <h1>The page is empty.</h1>
-      <p>Write below whenever you’re ready.</p>
-    </div>
-  {:else}
-    <ol class="thread">
-      {#each messages as message (message.id)}
-        <Turn {message} pending={message.id === pendingId} />
-      {/each}
-    </ol>
-  {/if}
-</section>
+<div class="frame">
+  <section id="conversation" class="transcript" bind:this={port} aria-label="Conversation" use:follow={messages.length}>
+    {#if !ready}
+      <div class="empty wait" aria-hidden="true"></div>
+    {:else if messages.length === 0}
+      <div class="empty">
+        <span class="mark" aria-hidden="true"></span>
+        <h1>The page is empty.</h1>
+        <p>Write below whenever you’re ready.</p>
+      </div>
+    {:else}
+      <ol class="thread">
+        {#each messages as message (message.id)}
+          <Turn {message} pending={message.id === pendingId} />
+        {/each}
+      </ol>
+    {/if}
+  </section>
+  <Track {port} />
+</div>
 
 <style>
+  .frame {
+    position: relative;
+    min-width: 0;
+    min-height: 0;
+    height: 100%;
+  }
+
   .transcript {
     min-width: 0;
     min-height: 0;
     height: 100%;
     overflow-x: hidden;
     overflow-y: auto;
-    position: relative;
     overscroll-behavior: contain;
     overflow-anchor: none;
     touch-action: pan-y;
-    scrollbar-width: thin;
-    scrollbar-color: var(--line) transparent;
+    scrollbar-width: none;
+    scrollbar-color: transparent transparent;
+  }
+
+  .transcript::-webkit-scrollbar {
+    width: 0;
+    height: 0;
   }
 
   .empty.wait {

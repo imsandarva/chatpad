@@ -37,6 +37,7 @@ Not used: Electron, Python/GTK for the app, Flutter (no first-party Cursor SDK).
 | `host/` | Durable Node host — login, one live `Agent`, `send` / `run.cancel()`, work rows |
 | `host/work.ts` | Turns `tool_call` stream events into a short label |
 | `src/lib/transcript/` | Conversation pane — `Transcript` lists, `follow` keeps the latest in view, `Turn` aligns, `Work` shows the steps, `Body` renders |
+| `src/lib/scroll/` | Thread rail — `Track` draws the bar, `geometry` sizes the handle, `bind` paints on scroll without a render |
 | `src/lib/settings/` | Settings sheet — markdown on/off for now |
 | `src/lib/markdown/` | Safe markdown render (`marked` + DOMPurify) |
 | `src/lib/agent/` | Send, Stop, and stream listener |
@@ -56,7 +57,7 @@ App id: `com.chatpad.app`. Window title: Chatpad.
 
 The UI is a composition layer: routes wire modules, modules own one pane. Login, folder, Send, Stop, Settings, and the chat thread are wired. Settings is a dialog. Markdown is on by default for Cursor’s replies. Your messages sit on the right; Cursor’s sit on the left.
 
-The window is a frame, not a page: `html`/`body` are fixed to the webview, and the desk is three grid rows — header, a `minmax(0, 1fr)` thread that scrolls, and the composer. A flex column lets WebKitGTK size the middle from its content and bury the write box.
+The window is a frame, not a page: `html`/`body` are fixed to the webview, and the desk is three grid rows — header, a `minmax(0, 1fr)` thread that scrolls, and the composer. A flex column lets WebKitGTK size the middle from its content and bury the write box. The thread hides the native bar — WebKitGTK will not style it — and draws its own handle, sized to the day, so a tap or drag can jump.
 
 On Linux the composer asks Rust for pictures the page cannot see: GTK clipboard for a copy, and `read_pictures` for a drop or a file URI. `dragDropEnabled` stays on so Tauri’s `onDragDropEvent` fires.
 
