@@ -44,4 +44,4 @@ A plain `npm run dev` is only the page. Sign in, the folder picker, and Send nee
 
 ## Status
 
-The first useful cut is in: toolchain, desk, Cursor login, stored folder, streamed reply, Stop, Settings / Markdown, a left/right chat thread that comes back when you reopen, more than one conversation per folder, work rows, and pictures you can paste, drop, or pick. What to do in the window is in [usage](./usage.md). What is still open is in [next steps](./next_steps.md).
+The first useful cut is in: toolchain, desk, Cursor login, stored folder, streamed reply, Stop, Settings / Markdown, a left/right chat thread that comes back when you reopen, more than one conversation per folder, a write box that stays open during a reply, work rows, and pictures you can paste, drop, or pick. What to do in the window is in [usage](./usage.md). What is still open is in [next steps](./next_steps.md).

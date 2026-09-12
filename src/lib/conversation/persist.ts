@@ -1,4 +1,5 @@
 import { invoke } from "@tauri-apps/api/core";
+import { drop } from "$lib/composer/queue.svelte";
 import { isNativeShell } from "$lib/platform";
 import { conversation } from "./conversation.svelte";
 import { setCatalog } from "./chats.svelte";
@@ -105,6 +106,7 @@ async function showChat(id: string) {
 }
 
 async function show(cwd: string, threadId: string, next: { agentId: string | null; messages: Message[] }) {
+  drop();
   conversation.messages = next.messages;
   conversation.agentId = next.agentId;
   conversation.threadId = threadId;

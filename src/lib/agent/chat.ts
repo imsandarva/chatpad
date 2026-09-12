@@ -1,7 +1,8 @@
 import { invoke } from "@tauri-apps/api/core";
 import { listen, type UnlistenFn } from "@tauri-apps/api/event";
 import { auth } from "$lib/auth/session.svelte";
-import { toPayload, type DraftPic } from "$lib/composer/images";
+import { release, toPayload, type DraftPic } from "$lib/composer/images";
+import { take } from "$lib/composer/queue.svelte";
 import { addAssistant, addUser, appendDelta, applyWork, conversation, failAssistant, settleStopped } from "$lib/conversation/conversation.svelte";
 import { flush, note, openFolder } from "$lib/conversation/persist";
 import { rememberPics } from "$lib/conversation/store";
@@ -33,6 +34,7 @@ export async function startAgentListener(): Promise<UnlistenFn> {
 export async function sendPrompt(prompt: string, pics: DraftPic[] = []) {
   await loadWorkspace();
   await openFolder(workspace.cwd);
+  const thread = conversation.threadId;
   conversation.busy = true;
   conversation.stopping = false;
   conversation.error = "";
@@ -59,6 +61,10 @@ export async function sendPrompt(prompt: string, pics: DraftPic[] = []) {
     conversation.busy = false;
     conversation.stopping = false;
     await flush();
+    const next = take();
+    if (!next) return;
+    if (conversation.threadId !== thread) { for (const pic of next.pics) release(pic); return; }
+    await sendPrompt(next.text, next.pics);
   }
 }
 

@@ -3,7 +3,8 @@
   import Account from "$lib/auth/Account.svelte";
   import Header from "$lib/chrome/Header.svelte";
   import Composer from "$lib/composer/Composer.svelte";
-  import type { DraftPic } from "$lib/composer/images";
+  import { MAX_PICS, release, type DraftPic } from "$lib/composer/images";
+  import { offer, take } from "$lib/composer/queue.svelte";
   import { conversation } from "$lib/conversation/conversation.svelte";
   import { openFolder, startPersistence } from "$lib/conversation/persist";
   import Earlier from "$lib/conversation/Earlier.svelte";
@@ -32,11 +33,26 @@
 
   function send() {
     const text = draft.trim();
-    if ((!text && !pics.length) || conversation.busy) return;
+    if (!text && !pics.length) return;
     const ready = pics;
+    if (conversation.busy) {
+      if (!offer(text, ready)) return;
+      draft = "";
+      pics = [];
+      return;
+    }
     draft = "";
     pics = [];
     void sendPrompt(text, ready);
+  }
+
+  function keep() {
+    const next = take();
+    if (!next) return;
+    draft = [next.text, draft].filter(Boolean).join("\n");
+    const merged = [...next.pics, ...pics];
+    pics = merged.slice(0, MAX_PICS);
+    for (const pic of merged.slice(MAX_PICS)) release(pic);
   }
 </script>
 
@@ -46,7 +62,7 @@
     {#snippet end()}<New /><Earlier /><Settings /><Account />{/snippet}
   </Header>
   <Transcript messages={conversation.messages} busy={conversation.busy} ready={conversation.ready} />
-  <Composer bind:value={draft} bind:pics disabled={conversation.busy} stopping={conversation.stopping} onsend={send} onstop={() => void stopPrompt()} />
+  <Composer bind:value={draft} bind:pics busy={conversation.busy} stopping={conversation.stopping} onsend={send} onstop={() => void stopPrompt()} onkeep={keep} />
 </div>
 
 <style>

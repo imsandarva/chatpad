@@ -4,29 +4,35 @@
   import { autosize } from "./autosize";
   import { filesFrom, MAX_PICS, release, toDraft, type DraftPic } from "./images";
   import { clipboardAttach, filesFromPaths, listenFileDrop, type NativePics } from "./native";
+  import { queue } from "./queue.svelte";
   import Thumbs from "./Thumbs.svelte";
+  import Waiting from "./Waiting.svelte";
 
   let {
     value = $bindable(""),
     pics = $bindable([] as DraftPic[]),
-    disabled = false,
+    busy = false,
     stopping = false,
     onsend,
     onstop,
+    onkeep,
   }: {
     value: string;
     pics: DraftPic[];
-    disabled?: boolean;
+    busy?: boolean;
     stopping?: boolean;
     onsend: () => void;
     onstop: () => void;
+    onkeep?: () => void;
   } = $props();
 
   let picker: HTMLInputElement | undefined = $state();
   let hover = $state(0);
   let hint = $state("");
-  const canSend = $derived(!disabled && (value.trim().length > 0 || pics.length > 0));
-  const note = $derived(pics.length ? "Add a note if you like" : "Write a message");
+  const hasDraft = $derived(value.trim().length > 0 || pics.length > 0);
+  const canSend = $derived(hasDraft && !queue.next);
+  const holdHint = $derived(queue.next && hasDraft ? "One note is already waiting." : "");
+  const note = $derived(pics.length ? "Add a note if you like" : busy ? "Write the next one" : "Write a message");
 
   function submit(event?: SubmitEvent) {
     event?.preventDefault();
@@ -42,7 +48,7 @@
   }
 
   async function take(files: File[]) {
-    if (disabled || !files.length) return;
+    if (!files.length) return;
     hint = "";
     const room = MAX_PICS - pics.length;
     if (room <= 0) {
@@ -119,7 +125,7 @@
   });
 
   $effect(() => {
-    if (!disabled) return;
+    if (!busy) return;
     const onkey = (event: KeyboardEvent) => {
       if (event.key === "Escape" && !stopping) {
         event.preventDefault();
@@ -133,8 +139,13 @@
 
 <form class="dock" onsubmit={submit}>
   <div class="well" class:over={hover > 0} role="group" aria-label="Write a message" {ondragenter} {ondragleave} {ondragover} {ondrop}>
-    <Thumbs images={pics} onremove={disabled ? undefined : drop} />
-    {#if hint}
+    {#if queue.next}
+      <Waiting item={queue.next} onundo={() => onkeep?.()} />
+    {/if}
+    <Thumbs images={pics} onremove={drop} />
+    {#if holdHint}
+      <p class="hint">{holdHint}</p>
+    {:else if hint}
       <p class="hint">{hint}</p>
     {:else if hover > 0}
       <p class="hint">Drop to attach</p>
@@ -147,20 +158,18 @@
       placeholder={note}
       autocomplete="off"
       spellcheck="true"
-      disabled={disabled}
       bind:value
       use:autosize={value}
       onkeydown={onkeydown}
       {onpaste}
     ></textarea>
     <div class="bar">
-      <input class="sr" type="file" accept="image/png,image/jpeg,image/webp,image/gif" multiple bind:this={picker} disabled={disabled} onchange={() => { if (picker?.files) void take(filesFrom(picker.files)); if (picker) picker.value = ""; }} />
-      <button type="button" class="add" disabled={disabled} aria-label="Add a picture" onclick={() => picker?.click()}>+</button>
-      {#if disabled}
-        <button type="button" class="stop" disabled={stopping} aria-label="Stop this reply" onclick={onstop}>{stopping ? "Stopping" : "Stop"}</button>
-      {:else}
-        <button type="submit" disabled={!canSend}>Send</button>
+      <input class="sr" type="file" accept="image/png,image/jpeg,image/webp,image/gif" multiple bind:this={picker} onchange={() => { if (picker?.files) void take(filesFrom(picker.files)); if (picker) picker.value = ""; }} />
+      <button type="button" class="add" aria-label="Add a picture" onclick={() => picker?.click()}>+</button>
+      {#if busy}
+        <button type="button" class="stop" class:side={canSend} disabled={stopping} aria-label="Stop this reply" onclick={onstop}>{stopping ? "Stopping" : "Stop"}</button>
       {/if}
+      <button type="submit" disabled={!canSend}>Send</button>
     </div>
   </div>
 </form>
@@ -272,6 +281,16 @@
     height: 0.42rem;
     border-radius: 0.08rem;
     background: currentColor;
+  }
+
+  .stop.side {
+    background: transparent;
+    color: var(--ink);
+    box-shadow: inset 0 0 0 1px var(--well-edge);
+  }
+
+  .stop.side:disabled {
+    background: transparent;
   }
 
   button:hover:not(:disabled) {
