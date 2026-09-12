@@ -41,7 +41,7 @@ Not used: Electron, Python/GTK for the app, Flutter (no first-party Cursor SDK).
 | `src/lib/markdown/` | Safe markdown render (`marked` + DOMPurify) |
 | `src/lib/agent/` | Send, Stop, and stream listener |
 | `src/lib/conversation/` | Transcript messages and agent id |
-| `src/lib/composer/` | Writing well |
+| `src/lib/composer/` | Writing well — text, paste/drop pictures, thumbnails |
 | `src/lib/types/` | Shared shapes |
 | `src/app.css` | Tokens and reset |
 | `src-tauri/` | Native window (Rust crate `chatpad` / `chatpad_lib`) |

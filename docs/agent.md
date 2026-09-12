@@ -14,7 +14,7 @@ you type  →  the desk  →  Tauri  →  host/  →  Cursor agent
 
 ## A turn
 
-1. You send. The desk puts your bubble on the right and an empty Cursor bubble on the left.
+1. You send. The desk puts your bubble on the right — text and any pictures — and an empty Cursor bubble on the left. Pictures go with the text, not as a path the agent has to find.
 2. The first send in a folder creates a local agent (`composer-2.5`). The next send on that same folder reuses it — a follow-up, not a cold start.
 3. Tool calls arrive as work rows (`run.stream()`). Tokens arrive as they are written (`onDelta`).
 4. The run ends, or you **Stop**.
@@ -29,7 +29,7 @@ Stop writes a cancel line to the host. The host calls `run.cancel()`. The stream
 
 The transcript shows the **text** of a reply and the **work** behind it — shell, edits, reads, and the rest — as short lines in that turn. The host keeps the raw tool payloads; the page only gets a label and a short detail.
 
-Images cannot ride with a message yet. The thread is not saved when the window closes. Those are on [next steps](./next_steps.md).
+Pictures ride with the send. The thread is still only in this window; closing it clears the day. That is on [next steps](./next_steps.md).
 
 ## Account
 

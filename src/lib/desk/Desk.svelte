@@ -3,6 +3,7 @@
   import Account from "$lib/auth/Account.svelte";
   import Header from "$lib/chrome/Header.svelte";
   import Composer from "$lib/composer/Composer.svelte";
+  import type { DraftPic } from "$lib/composer/images";
   import { conversation } from "$lib/conversation/conversation.svelte";
   import Transcript from "$lib/transcript/Transcript.svelte";
   import Settings from "$lib/settings/Settings.svelte";
@@ -10,6 +11,7 @@
   import { onMount } from "svelte";
 
   let draft = $state("");
+  let pics = $state<DraftPic[]>([]);
 
   onMount(() => {
     let stop = () => {};
@@ -19,9 +21,11 @@
 
   function send() {
     const text = draft.trim();
-    if (!text || conversation.busy) return;
+    if ((!text && !pics.length) || conversation.busy) return;
+    const ready = pics;
     draft = "";
-    void sendPrompt(text);
+    pics = [];
+    void sendPrompt(text, ready);
   }
 </script>
 
@@ -31,7 +35,7 @@
     {#snippet end()}<Settings /><Account />{/snippet}
   </Header>
   <Transcript messages={conversation.messages} busy={conversation.busy} />
-  <Composer bind:value={draft} disabled={conversation.busy} stopping={conversation.stopping} onsend={send} onstop={() => void stopPrompt()} />
+  <Composer bind:value={draft} bind:pics disabled={conversation.busy} stopping={conversation.stopping} onsend={send} onstop={() => void stopPrompt()} />
 </div>
 
 <style>

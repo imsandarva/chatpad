@@ -1,6 +1,7 @@
 import { invoke } from "@tauri-apps/api/core";
 import { listen, type UnlistenFn } from "@tauri-apps/api/event";
 import { auth } from "$lib/auth/session.svelte";
+import { toPayload, type DraftPic } from "$lib/composer/images";
 import { addAssistant, addUser, appendDelta, applyWork, conversation, failAssistant, settleStopped } from "$lib/conversation/conversation.svelte";
 import { isNativeShell } from "$lib/platform";
 import { workspace } from "$lib/workspace/workspace.svelte";
@@ -26,7 +27,7 @@ export async function startAgentListener(): Promise<UnlistenFn> {
   return listen<HostEvent>("agent-event", (event) => apply(event.payload));
 }
 
-export async function sendPrompt(prompt: string) {
+export async function sendPrompt(prompt: string, pics: DraftPic[] = []) {
   conversation.busy = true;
   conversation.stopping = false;
   conversation.error = "";
@@ -35,7 +36,7 @@ export async function sendPrompt(prompt: string) {
     conversation.cwd = workspace.cwd;
   }
 
-  addUser(prompt);
+  addUser(prompt, pics.map(({ id, name, mime, url }) => ({ id, name, mime, url })));
   addAssistant();
 
   if (!isNativeShell()) {
@@ -50,7 +51,8 @@ export async function sendPrompt(prompt: string) {
   }
 
   try {
-    await invoke("cursor_send", { prompt, cwd: workspace.cwd, agentId: conversation.agentId });
+    const images = pics.length ? await toPayload(pics) : [];
+    await invoke("cursor_send", { prompt, cwd: workspace.cwd, agentId: conversation.agentId, images });
   } catch {
     if (conversation.stopping) settleStopped();
     else failAssistant("Couldn’t reach the agent. Try again.");

@@ -1,4 +1,4 @@
-import type { Block, Message, Work } from "$lib/types/message";
+import type { Block, Message, Pic, Work } from "$lib/types/message";
 
 export const conversation = $state({
   messages: [] as Message[],
@@ -13,8 +13,8 @@ function id(): string {
   return crypto.randomUUID();
 }
 
-export function addUser(text: string) {
-  conversation.messages.push({ id: id(), role: "user", text });
+export function addUser(text: string, pics?: Pic[]) {
+  conversation.messages.push({ id: id(), role: "user", text, pics });
 }
 
 export function addAssistant(): Message {

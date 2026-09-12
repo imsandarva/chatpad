@@ -13,7 +13,7 @@ If nothing has been said yet:
 
 Each message is a bubble.
 
-- **Yours** sit on the right, filled in, like a message you sent.
+- **Yours** sit on the right, filled in, like a message you sent. Pictures you attached sit in that bubble.
 - **Cursor’s** sit on the left, quieter, like a message that arrived.
 
 Short ones stay small. Longer ones wrap, up to most of the column. Two of yours in a row nest a little closer; a change of speaker opens a breath.

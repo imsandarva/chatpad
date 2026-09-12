@@ -11,10 +11,13 @@ export type Work = {
 
 export type Block = { kind: "text"; id: string; text: string } | ({ kind: "work" } & Work);
 
+export type Pic = { id: string; name: string; mime: string; url: string };
+
 export type Message = {
   id: string;
   role: Role;
   text: string;
+  pics?: Pic[];
   blocks?: Block[];
   failed?: boolean;
   stopped?: boolean;

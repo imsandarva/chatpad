@@ -6,6 +6,13 @@ use std::sync::{Arc, Condvar, Mutex};
 use std::thread;
 use tauri::{AppHandle, Emitter};
 
+#[derive(Clone, Serialize, serde::Deserialize)]
+pub struct SendImage {
+    data: String,
+    #[serde(rename = "mimeType")]
+    mime_type: String,
+}
+
 #[derive(Serialize)]
 struct SendCmd<'a> {
     #[serde(rename = "type")]
@@ -14,6 +21,7 @@ struct SendCmd<'a> {
     cwd: &'a str,
     #[serde(rename = "agentId")]
     agent_id: Option<&'a str>,
+    images: Option<&'a [SendImage]>,
 }
 
 struct Turn {
@@ -107,7 +115,7 @@ impl Host {
         *self.0.child.lock().expect("host child") = None;
     }
 
-    pub fn send(&self, app: &AppHandle, prompt: &str, cwd: &str, agent_id: Option<&str>) -> Result<(), String> {
+    pub fn send(&self, app: &AppHandle, prompt: &str, cwd: &str, agent_id: Option<&str>, images: Option<&[SendImage]>) -> Result<(), String> {
         self.ensure(app)?;
         let turn = Turn::new();
         *self.0.turn.lock().expect("host turn") = Some(turn.clone());
@@ -115,7 +123,7 @@ impl Host {
         {
             let mut stdin = self.0.stdin.lock().expect("host stdin");
             let pipe = stdin.as_mut().ok_or_else(|| "host stdin closed".to_string())?;
-            serde_json::to_writer(&mut *pipe, &SendCmd { kind: "send", prompt, cwd, agent_id }).map_err(|err| err.to_string())?;
+            serde_json::to_writer(&mut *pipe, &SendCmd { kind: "send", prompt, cwd, agent_id, images }).map_err(|err| err.to_string())?;
             pipe.write_all(b"\n").map_err(|err| err.to_string())?;
             pipe.flush().ok();
         }

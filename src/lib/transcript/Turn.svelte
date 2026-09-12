@@ -1,6 +1,7 @@
 <script lang="ts">
   import { settings } from "$lib/settings/settings.svelte";
   import type { Message } from "$lib/types/message";
+  import Thumbs from "$lib/composer/Thumbs.svelte";
   import Body from "./Body.svelte";
   import Work from "./Work.svelte";
 
@@ -29,8 +30,13 @@
   <span class="sr">{who}</span>
 
   {#if mine}
-    <div class="bubble">
-      <Body text={message.text} pending={false} quiet={false} failed={false} />
+    <div class="bubble" class:bare={!message.text}>
+      {#if message.pics?.length}
+        <Thumbs images={message.pics} />
+      {/if}
+      {#if message.text}
+        <Body text={message.text} pending={false} quiet={false} failed={false} />
+      {/if}
     </div>
   {:else}
     {#each blocks as block, i (block.id)}
@@ -90,6 +96,12 @@
     border-radius: 1.2rem;
     transition: border-radius 0.18s var(--ease);
   }
+
+  .bubble.bare { padding: 0.4rem; }
+
+  .turn[data-role="user"] .bubble :global(.thumbs) { margin-bottom: 0; }
+  .turn[data-role="user"] .bubble :global(.tile) { background: color-mix(in srgb, var(--send-ink) 12%, transparent); }
+  .turn[data-role="user"] .bubble :global(.thumbs + :is(p, .md)) { margin-top: 0.5rem; }
 
   .turn[data-role="user"] .bubble {
     background: var(--send);

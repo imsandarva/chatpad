@@ -59,11 +59,11 @@ export function createRuntime() {
       const bind = (run: RunHandle) => { current = run; };
 
       try {
-        let result = await runTurn(live, req.prompt, stop, bind);
+        let result = await runTurn(live, req.prompt, stop, bind, req.images);
         // Idle local handles go stale; resume once if nothing streamed.
         if (result.status === "error" && !result.streamed && !stop.requested) {
           await reconnect();
-          if (agent && !stop.requested) result = await runTurn(agent, req.prompt, stop, bind);
+          if (agent && !stop.requested) result = await runTurn(agent, req.prompt, stop, bind, req.images);
         }
         if (result.status === "cancelled" || stop.requested) emit({ type: "cancelled", agentId: live.agentId });
         else if (result.status === "error") emit({ type: "error", message: result.message || "The reply didn’t finish." });
@@ -76,7 +76,7 @@ export function createRuntime() {
         try {
           await reconnect();
           if (agent && !stop.requested) {
-            const retry = await runTurn(agent, req.prompt, stop, bind);
+            const retry = await runTurn(agent, req.prompt, stop, bind, req.images);
             if (retry.status === "cancelled") emit({ type: "cancelled", agentId: agent.agentId });
             else if (retry.status === "error") emit({ type: "error", message: retry.message || human(err) });
             else emit({ type: "done", agentId: agent.agentId });

@@ -2,10 +2,13 @@ import { Agent, CursorAgentError } from "@cursor/sdk";
 import type { StopGate } from "./stop.ts";
 import { fromTool, type WorkEvent } from "./work.ts";
 
+export type SendImage = { data: string; mimeType: string };
+
 export type SendRequest = {
   prompt: string;
   cwd: string;
   agentId?: string | null;
+  images?: SendImage[];
 };
 
 export type HostEvent =
@@ -76,11 +79,13 @@ export async function runTurn(
   prompt: string,
   stop: StopGate,
   onRun: (run: RunHandle) => void,
+  images?: SendImage[],
 ): Promise<TurnResult> {
   let textStreamed = false;
   let sawWork = false;
   const streamed = () => textStreamed || sawWork;
-  const run = await agent.send(prompt, {
+  const payload = images?.length ? { text: prompt, images } : prompt;
+  const run = await agent.send(payload, {
     onDelta: ({ update }) => {
       if (update.type === "text-delta" && update.text) {
         textStreamed = true;
