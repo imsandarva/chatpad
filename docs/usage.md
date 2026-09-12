@@ -25,7 +25,7 @@ The box at the bottom is a real text field. Type as you would anywhere else.
 | **Send** | Same as Enter |
 | **Stop** or **Escape** | End a reply that is still coming |
 
-Send is quiet until there is something to send. While a reply is coming in, the box waits and Send becomes Stop.
+Send is quiet until there is something to send. While a reply is coming in, the box waits and Send becomes Stop. Commands and file work appear as quiet lines in Cursor’s turn, then the reply.
 
 ## Settings
 

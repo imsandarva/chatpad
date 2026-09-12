@@ -22,8 +22,8 @@ The composer is the product. The rest of the window exists so writing has somewh
 
 ## Now, and next
 
-The first useful cut is in: sign in, pick a folder, write, get a streamed reply, and Stop. Markdown can be on or off. The thread is a normal chat.
+The first useful cut is in: sign in, pick a folder, write, get a streamed reply, and Stop. Markdown can be on or off. The thread is a normal chat, and the work — commands, edits, reads — shows in the same turn.
 
-Still ahead, one at a time: show the work the agent is doing, pictures in the composer, and keeping the thread when the window closes. See [next steps](./next_steps.md).
+Still ahead, one at a time: pictures in the composer, and keeping the thread when the window closes. See [next steps](./next_steps.md).
 
 The long aim is that this desk can do what the CLI can do — run the same agent, on the same machine — without asking you to type inside a TUI.

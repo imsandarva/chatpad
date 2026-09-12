@@ -1,4 +1,4 @@
-import type { Message } from "$lib/types/message";
+import type { Block, Message, Work } from "$lib/types/message";
 
 export const conversation = $state({
   messages: [] as Message[],
@@ -18,7 +18,7 @@ export function addUser(text: string) {
 }
 
 export function addAssistant(): Message {
-  const turn = { id: id(), role: "assistant" as const, text: "" };
+  const turn = { id: id(), role: "assistant" as const, text: "", blocks: [] as Block[] };
   conversation.messages.push(turn);
   return turn;
 }
@@ -31,7 +31,21 @@ export function lastAssistant(): Message | undefined {
 
 export function appendDelta(text: string) {
   const turn = lastAssistant();
-  if (turn) turn.text += text;
+  if (!turn) return;
+  turn.text += text;
+  const blocks = turn.blocks ??= [];
+  const last = blocks.at(-1);
+  if (last?.kind === "text") last.text += text;
+  else blocks.push({ kind: "text", id: id(), text });
+}
+
+export function applyWork(step: Work) {
+  const turn = lastAssistant();
+  if (!turn) return;
+  const blocks = turn.blocks ??= [];
+  const i = blocks.findIndex((block) => block.kind === "work" && block.id === step.id);
+  if (i >= 0) blocks[i] = { kind: "work", ...step };
+  else blocks.push({ kind: "work", ...step });
 }
 
 export function failAssistant(text: string) {
@@ -46,3 +60,4 @@ export function settleStopped() {
   const turn = lastAssistant();
   if (turn) turn.stopped = true;
 }
+

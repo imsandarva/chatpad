@@ -16,7 +16,7 @@ you type  →  the desk  →  Tauri  →  host/  →  Cursor agent
 
 1. You send. The desk puts your bubble on the right and an empty Cursor bubble on the left.
 2. The first send in a folder creates a local agent (`composer-2.5`). The next send on that same folder reuses it — a follow-up, not a cold start.
-3. Tokens come back as they are written. The left bubble grows.
+3. Tool calls arrive as work rows (`run.stream()`). Tokens arrive as they are written (`onDelta`).
 4. The run ends, or you **Stop**.
 
 Changing the folder disposes that agent and opens a new one. Closing the agent after every reply was what made Chatpad feel slower than the CLI.
@@ -27,9 +27,9 @@ Stop writes a cancel line to the host. The host calls `run.cancel()`. The stream
 
 ## What you see, what you do not
 
-Today the transcript shows assistant **text**. The agent can still run shell and edits — the CLI would print those steps. The desk does not show them yet.
+The transcript shows the **text** of a reply and the **work** behind it — shell, edits, reads, and the rest — as short lines in that turn. The host keeps the raw tool payloads; the page only gets a label and a short detail.
 
-Images cannot ride with a message yet. Both are on [next steps](./next_steps.md).
+Images cannot ride with a message yet. The thread is not saved when the window closes. Those are on [next steps](./next_steps.md).
 
 ## Account
 

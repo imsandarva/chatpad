@@ -8,8 +8,11 @@
   const pendingId = $derived(busy ? messages.findLast((message) => message.role === "assistant")?.id : undefined);
 
   $effect(() => {
+    const last = messages.at(-1);
     messages.length;
-    messages.at(-1)?.text;
+    last?.text;
+    last?.blocks?.length;
+    last?.blocks?.map((block) => (block.kind === "work" ? block.status : block.text.length)).join();
     pane?.scrollTo({ top: pane.scrollHeight });
   });
 </script>

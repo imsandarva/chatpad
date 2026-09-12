@@ -20,9 +20,15 @@ Short ones stay small. Longer ones wrap, up to most of the column. Two of yours 
 
 The names “You” and “Cursor” are there for a screen reader. On the page, the side is enough.
 
+## The work
+
+When Cursor runs a command or touches a file, that step appears in the same turn — a quiet line on the left, not a bubble. You see it start, then settle, the way the CLI prints the work before the reply.
+
+A command shows the command. A file shows the name. The reply, if there is one, follows underneath.
+
 ## While a reply is coming
 
-The last Cursor bubble stays open and a small caret blinks at the end. The page follows the text down as it arrives.
+A step that is still running keeps a small pulse. If Cursor is writing, the last bubble stays open and a caret blinks at the end. The page follows the work down as it arrives.
 
 ## Stop and fail
 
