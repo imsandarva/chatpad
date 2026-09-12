@@ -10,6 +10,7 @@ Format: [Keep a Changelog](https://keepachangelog.com/). Versioning is informal 
 - `@cursor/sdk` as a project dependency (not wired to the UI yet).
 - Isolated toolchain: nvm Node 22, rustup 1.98, apt WebKit/GTK `-dev` packages.
 - Product, architecture, and setup docs.
+- Two-pane desk UI: empty transcript and a real composer (Send idle).
 
 ### Changed
 

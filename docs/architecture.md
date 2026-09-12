@@ -27,11 +27,20 @@ Not used: Electron, Python/GTK for the app, Flutter (no first-party Cursor SDK).
 | Path | Role |
 | --- | --- |
 | `src/` | UI (SvelteKit) |
+| `src/routes/+page.svelte` | Thin entry — mounts the desk |
+| `src/lib/desk/` | Composes header, transcript, composer |
+| `src/lib/chrome/` | Window chrome (wordmark; login/folder later) |
+| `src/lib/transcript/` | Conversation pane |
+| `src/lib/composer/` | Writing well (Send is idle) |
+| `src/lib/types/` | Shared shapes |
+| `src/app.css` | Tokens and reset |
 | `src-tauri/` | Native window (Rust crate `chatpad` / `chatpad_lib`) |
 | `node_modules/` | JS/TS packages from `npm install` |
 | `src-tauri/target/` | Rust build output |
 
 App id: `com.chatpad.app`. Window title: Chatpad.
+
+The UI is a composition layer: routes wire modules, modules own one pane. Send does not call the agent yet.
 
 ## Runtime dependencies
 

@@ -36,10 +36,10 @@ npm install
 npm run tauri dev
 ```
 
-`cargo check` in `src-tauri/` should pass. The window is still the Tauri greet template until the chat UI exists.
+`cargo check` in `src-tauri/` should pass. The window is a two-pane desk: transcript above, composer below. Send does nothing yet.
 
 ## Status
 
-Done: toolchain, scaffold, rename to Chatpad, `cargo check`.
+Done: toolchain, scaffold, rename to Chatpad, `cargo check`, desk shell.
 
-Not done: composer, transcript, Cursor login in the app.
+Not done: Cursor login, folder picker, Send → streamed reply.
