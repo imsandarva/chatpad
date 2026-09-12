@@ -1,6 +1,7 @@
 <script lang="ts">
   import { settings } from "$lib/settings/settings.svelte";
   import type { Message } from "$lib/types/message";
+  import Copy from "$lib/copy/Copy.svelte";
   import Thumbs from "$lib/composer/Thumbs.svelte";
   import Body from "./Body.svelte";
   import Work from "./Work.svelte";
@@ -30,12 +31,17 @@
   <span class="sr">{who}</span>
 
   {#if mine}
-    <div class="bubble" class:bare={!message.text}>
-      {#if message.pics?.length}
-        <Thumbs images={message.pics} />
-      {/if}
+    <div class="wrap">
+      <div class="bubble" class:bare={!message.text}>
+        {#if message.pics?.length}
+          <Thumbs images={message.pics} />
+        {/if}
+        {#if message.text}
+          <Body text={message.text} pending={false} quiet={false} failed={false} />
+        {/if}
+      </div>
       {#if message.text}
-        <Body text={message.text} pending={false} quiet={false} failed={false} />
+        <Copy text={message.text} />
       {/if}
     </div>
   {:else}
@@ -43,27 +49,35 @@
       {#if block.kind === "work"}
         <Work step={block} />
       {:else if block.text}
-        <div class="bubble">
-          <Body
-            text={block.text}
-            markdown={settings.markdown}
-            pending={pending && !running && i === lastText}
-            quiet={false}
-            failed={Boolean(message.failed) && i === lastText && !block.text}
-          />
+        <div class="wrap">
+          <div class="bubble">
+            <Body
+              text={block.text}
+              markdown={settings.markdown}
+              pending={pending && !running && i === lastText}
+              quiet={false}
+              failed={Boolean(message.failed) && i === lastText && !block.text}
+            />
+          </div>
+          <Copy text={block.text} />
         </div>
       {/if}
     {/each}
 
     {#if showNote}
-      <div class="bubble">
-        <Body
-          text={note}
-          markdown={false}
-          pending={pending && !running}
-          quiet={Boolean(message.stopped && !hasText)}
-          failed={Boolean(message.failed)}
-        />
+      <div class="wrap">
+        <div class="bubble">
+          <Body
+            text={note}
+            markdown={false}
+            pending={pending && !running}
+            quiet={Boolean(message.stopped && !hasText)}
+            failed={Boolean(message.failed)}
+          />
+        </div>
+        {#if note}
+          <Copy text={note} />
+        {/if}
       </div>
     {/if}
   {/if}
@@ -91,10 +105,38 @@
     animation-name: rise-theirs;
   }
 
+  .wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    max-width: 100%;
+    gap: 0.18rem;
+  }
+
+  .turn[data-role="user"] .wrap {
+    align-self: stretch;
+    align-items: flex-end;
+  }
+
+  .wrap :global(.copy-btn) {
+    opacity: 0;
+  }
+
+  .wrap:hover :global(.copy-btn),
+  .wrap:focus-within :global(.copy-btn) {
+    opacity: 1;
+  }
+
+  @media (hover: none) {
+    .wrap :global(.copy-btn) { opacity: 0.75; }
+  }
+
   .bubble {
     padding: 0.62rem 0.92rem 0.68rem;
     border-radius: 1.2rem;
     transition: border-radius 0.18s var(--ease);
+    user-select: text;
+    -webkit-user-select: text;
   }
 
   .bubble.bare { padding: 0.4rem; }
@@ -129,9 +171,9 @@
   }
 
   .turn :global(.step + .step) { margin-top: 0.12rem; }
-  .turn :global(.step + .bubble),
-  .turn :global(.bubble + .step) { margin-top: 0.5rem; }
-  .turn :global(.bubble + .bubble) { margin-top: 0.42rem; }
+  .turn :global(.step + .wrap),
+  .turn :global(.wrap + .step) { margin-top: 0.5rem; }
+  .turn :global(.wrap + .wrap) { margin-top: 0.42rem; }
 
   @keyframes rise-theirs {
     from { opacity: 0; transform: translate3d(-0.4rem, 0.35rem, 0); }

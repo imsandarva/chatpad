@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { blocks } from "$lib/copy/blocks";
   import { renderMarkdown } from "$lib/markdown/render";
 
   let {
@@ -19,7 +20,7 @@
 </script>
 
 {#if markdown && text}
-  <div class="md" class:quiet class:failed data-pending={pending}>{@html html}</div>
+  <div class="md" class:quiet class:failed data-pending={pending} use:blocks={html}>{@html html}</div>
 {:else}
   <p class:quiet class:failed data-pending={pending}>{text}</p>
 {/if}
@@ -102,12 +103,56 @@
   }
 
   .md :global(pre) {
+    position: relative;
     margin: 0 0 0.8em;
     padding: 0.75rem 0.85rem;
     overflow-x: auto;
     border-radius: 0.65rem;
     background: color-mix(in srgb, var(--ink) 5.5%, var(--paper));
     border: 1px solid var(--line);
+  }
+
+  .md :global(pre.copyable) {
+    padding-top: 2rem;
+  }
+
+  .md :global(pre > .copy-btn) {
+    position: absolute;
+    top: 0.35rem;
+    right: 0.4rem;
+    z-index: 1;
+    height: 1.45rem;
+    padding: 0 0.45rem;
+    border: 0;
+    border-radius: 0.4rem;
+    background: color-mix(in srgb, var(--well) 82%, transparent);
+    color: var(--ink-soft);
+    font: 500 0.6875rem var(--font);
+    letter-spacing: 0.02em;
+    line-height: 1;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.16s var(--ease), color 0.14s var(--ease), background-color 0.14s var(--ease);
+  }
+
+  .md :global(pre:hover > .copy-btn),
+  .md :global(pre:focus-within > .copy-btn),
+  .md :global(pre > .copy-btn:focus-visible) {
+    opacity: 1;
+  }
+
+  .md :global(pre > .copy-btn:hover) {
+    background: var(--well);
+    color: var(--ink);
+  }
+
+  .md :global(pre > .copy-btn:focus-visible) {
+    outline: 2px solid var(--ink);
+    outline-offset: 2px;
+  }
+
+  @media (hover: none) {
+    .md :global(pre > .copy-btn) { opacity: 0.8; }
   }
 
   .md :global(pre code) {

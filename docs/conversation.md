@@ -26,6 +26,8 @@ When Cursor runs a command or touches a file, that step appears in the same turn
 
 A command shows the command. A file shows the name. The reply, if there is one, follows underneath.
 
+Hover a bubble, a work line, or a block of code and **Copy** takes the words — the whole note, the command, the file name — so you do not have to fight the page. You can still select a piece and copy that the usual way.
+
 ## While a reply is coming
 
 A step that is still running keeps a small pulse. If Cursor is writing, the last bubble stays open and a caret blinks at the end. The thread follows new words down, unless you scroll up to read — then it stays put until you return to the bottom.

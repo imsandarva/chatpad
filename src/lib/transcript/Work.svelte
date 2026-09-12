@@ -1,7 +1,10 @@
 <script lang="ts">
+  import Copy from "$lib/copy/Copy.svelte";
   import type { Work } from "$lib/types/message";
 
   let { step }: { step: Work } = $props();
+
+  const clip = $derived(step.detail || step.label);
 </script>
 
 <div class="step" data-status={step.status}>
@@ -11,6 +14,9 @@
     {#if step.detail}
       <p class="detail">{step.detail}</p>
     {/if}
+  </div>
+  <div class="take">
+    <Copy text={clip} />
   </div>
 </div>
 
@@ -23,6 +29,22 @@
     padding: 0.18rem 0.2rem;
     color: var(--ink-soft);
     animation: fade 0.28s var(--ease) both;
+  }
+
+  .take {
+    flex: 0 0 auto;
+    margin-left: auto;
+    opacity: 0;
+    transition: opacity 0.16s var(--ease);
+  }
+
+  .step:hover .take,
+  .step:focus-within .take {
+    opacity: 1;
+  }
+
+  @media (hover: none) {
+    .take { opacity: 0.75; }
   }
 
   .dot {
@@ -51,7 +73,7 @@
     background: var(--danger);
   }
 
-  .copy { min-width: 0; }
+  .copy { min-width: 0; user-select: text; -webkit-user-select: text; }
 
   .label {
     margin: 0;

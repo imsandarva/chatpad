@@ -6,6 +6,7 @@ Format: [Keep a Changelog](https://keepachangelog.com/). Versioning is informal 
 
 ### Added
 
+- Copy on a bubble, a work line, or a code block — take the words without fighting the page.
 - The write box stays open while a reply is coming; Send holds the next note until this turn finishes.
 - New starts a fresh conversation in the same folder; Earlier brings the old ones back.
 - A slim bar on the thread when the day runs long — tap or drag to jump, Home and End to the ends.

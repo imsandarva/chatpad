@@ -37,6 +37,7 @@ Not used: Electron, Python/GTK for the app, Flutter (no first-party Cursor SDK).
 | `host/` | Durable Node host — login, one live `Agent`, `send` / `run.cancel()`, work rows |
 | `host/work.ts` | Turns `tool_call` stream events into a short label |
 | `src/lib/transcript/` | Conversation pane — `Transcript` lists, `follow` keeps the latest in view, `Turn` aligns, `Work` shows the steps, `Body` renders |
+| `src/lib/copy/` | Copy a bubble, a work line, or a code block — `write` talks to the clipboard |
 | `src/lib/scroll/` | Thread rail — `Track` draws the bar, `geometry` sizes the handle, `bind` paints on scroll without a render |
 | `src/lib/settings/` | Settings sheet — markdown on/off for now |
 | `src/lib/markdown/` | Safe markdown render (`marked` + DOMPurify) |

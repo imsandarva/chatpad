@@ -1,6 +1,6 @@
 # Next steps
 
-The first useful cut is a desk: sign in, pick a folder, write, see the work, Stop, start a new page without leaving the folder, keep writing while a reply is coming, and find that thread again tomorrow. The composer is the product. What comes next should make writing easier — not turn the window into an editor.
+The first useful cut is a desk: sign in, pick a folder, write, see the work, Stop, start a new page without leaving the folder, keep writing while a reply is coming, copy what arrived, and find that thread again tomorrow. The composer is the product. What comes next should make writing easier — not turn the window into an editor.
 
 ## Done here
 
@@ -8,17 +8,13 @@ The first useful cut is a desk: sign in, pick a folder, write, see the work, Sto
 
 **Keep writing while a reply is coming.** The box stays yours. Send holds one follow-up until this turn finishes.
 
+**Copy what arrived.** Hover a bubble, a work line, or a code block. Copy takes the words.
+
 ## Do this next
 
-**Copy what arrived.**
+**Open a work line a little.**
 
-Selecting text is why this window exists. A reply and a work line should be easy to copy — the command, the file name, the whole bubble — without fighting the page.
-
-## After that
-
-These are the next honest holes, in order. None of them is an IDE.
-
-1. **Open a work line a little.** A command you can copy. A file name you can reveal. Not a diff viewer. Large diffs still belong in the project.
+A command you can sit with. A file name you can reveal. Not a diff viewer. Large diffs still belong in the project.
 
 ## Later, if the desk is already a habit
 
