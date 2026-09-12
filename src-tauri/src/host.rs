@@ -13,6 +13,19 @@ pub struct SendImage {
     mime_type: String,
 }
 
+#[derive(Clone, Serialize, serde::Deserialize)]
+pub struct ModelParam {
+    pub id: String,
+    pub value: String,
+}
+
+#[derive(Clone, Serialize, serde::Deserialize)]
+pub struct ModelSelection {
+    pub id: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub params: Option<Vec<ModelParam>>,
+}
+
 #[derive(Serialize)]
 struct SendCmd<'a> {
     #[serde(rename = "type")]
@@ -22,6 +35,7 @@ struct SendCmd<'a> {
     #[serde(rename = "agentId")]
     agent_id: Option<&'a str>,
     images: Option<&'a [SendImage]>,
+    model: Option<&'a ModelSelection>,
 }
 
 struct Turn {
@@ -115,7 +129,7 @@ impl Host {
         *self.0.child.lock().expect("host child") = None;
     }
 
-    pub fn send(&self, app: &AppHandle, prompt: &str, cwd: &str, agent_id: Option<&str>, images: Option<&[SendImage]>) -> Result<(), String> {
+    pub fn send(&self, app: &AppHandle, prompt: &str, cwd: &str, agent_id: Option<&str>, images: Option<&[SendImage]>, model: Option<&ModelSelection>) -> Result<(), String> {
         self.ensure(app)?;
         let turn = Turn::new();
         *self.0.turn.lock().expect("host turn") = Some(turn.clone());
@@ -123,7 +137,7 @@ impl Host {
         {
             let mut stdin = self.0.stdin.lock().expect("host stdin");
             let pipe = stdin.as_mut().ok_or_else(|| "host stdin closed".to_string())?;
-            serde_json::to_writer(&mut *pipe, &SendCmd { kind: "send", prompt, cwd, agent_id, images }).map_err(|err| err.to_string())?;
+            serde_json::to_writer(&mut *pipe, &SendCmd { kind: "send", prompt, cwd, agent_id, images, model }).map_err(|err| err.to_string())?;
             pipe.write_all(b"\n").map_err(|err| err.to_string())?;
             pipe.flush().ok();
         }

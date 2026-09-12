@@ -118,6 +118,12 @@ async function show(cwd: string, threadId: string, next: { agentId: string | nul
 }
 
 /** Close the live agent so the next send is a new session, not a follow-up. */
+export async function forgetAgent() {
+  conversation.agentId = null;
+  await dropLiveAgent();
+  await flush();
+}
+
 async function dropLiveAgent() {
   if (!isNativeShell()) return;
   try { await invoke("cursor_dispose"); } catch { /* host not up */ }

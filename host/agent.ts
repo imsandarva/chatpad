@@ -1,4 +1,5 @@
 import { Agent, CursorAgentError } from "@cursor/sdk";
+import { pick, type ModelSelection } from "./model.ts";
 import type { StopGate } from "./stop.ts";
 import { fromTool, type WorkEvent } from "./work.ts";
 
@@ -9,6 +10,7 @@ export type SendRequest = {
   cwd: string;
   agentId?: string | null;
   images?: SendImage[];
+  model?: ModelSelection | null;
 };
 
 export type HostEvent =
@@ -26,8 +28,6 @@ export type RunHandle = {
   stream: () => AsyncGenerator<unknown, void>;
 };
 
-export const model = { id: "composer-2.5" } as const;
-
 export function emit(event: HostEvent) {
   const stdout = (globalThis as unknown as { process: { stdout: { write: (s: string) => void } } }).process.stdout;
   stdout.write(`${JSON.stringify(event)}\n`);
@@ -42,8 +42,8 @@ export function human(err: unknown): string {
   return "Something went wrong. Try again.";
 }
 
-export async function openAgent(cwd: string, agentId?: string | null) {
-  const options = { model, local: { cwd } };
+export async function openAgent(cwd: string, agentId?: string | null, model?: ModelSelection | null) {
+  const options = { model: pick(model), local: { cwd } };
   if (!agentId) return Agent.create(options);
   try {
     return await Agent.resume(agentId, options);

@@ -35,11 +35,12 @@ Not used: Electron, Python/GTK for the app, Flutter (no first-party Cursor SDK).
 | `src/lib/auth/` | Sign-in control, remembered name, session state |
 | `src/lib/workspace/` | Stored project folder (`cwd` for the agent) |
 | `host/` | Durable Node host — login, one live `Agent`, `send` / `run.cancel()`, work rows |
+| `host/model.ts` | Turns the page’s model choice into an SDK selection |
 | `host/work.ts` | Turns `tool_call` stream events into a label and a detail you can open |
 | `src/lib/transcript/` | Conversation pane — `Transcript` lists, `follow` keeps the latest in view, `Turn` aligns, `Work` shows the steps and opens one a little, `Body` renders |
 | `src/lib/copy/` | Copy a bubble, a work line, or a code block — `write` talks to the clipboard |
 | `src/lib/scroll/` | Thread rail — `Track` draws the bar, `geometry` sizes the handle, `bind` paints on scroll without a render |
-| `src/lib/settings/` | Settings sheet — markdown on/off for now |
+| `src/lib/settings/` | Settings sheet — model (Composer / Faster / Auto) and markdown |
 | `src/lib/markdown/` | Safe markdown render (`marked` + DOMPurify) |
 | `src/lib/agent/` | Send, Stop, and stream listener |
 | `src/lib/conversation/` | Live thread, earlier pages in the folder, New / Earlier, persist |
@@ -56,7 +57,7 @@ Not used: Electron, Python/GTK for the app, Flutter (no first-party Cursor SDK).
 
 App id: `com.chatpad.app`. Window title: Chatpad.
 
-The UI is a composition layer: routes wire modules, modules own one pane. Login, folder, Send, Stop, Settings, and the chat thread are wired. Settings is a dialog. Markdown is on by default for Cursor’s replies. Your messages sit on the right; Cursor’s sit on the left.
+The UI is a composition layer: routes wire modules, modules own one pane. Login, folder, Send, Stop, Settings, and the chat thread are wired. Settings is a dialog. The model is a short choice, not a catalog; markdown is on by default for Cursor’s replies. Your messages sit on the right; Cursor’s sit on the left.
 
 The window is a frame, not a page: `html`/`body` are fixed to the webview, and the desk is three grid rows — header, a `minmax(0, 1fr)` thread that scrolls, and the composer. A flex column lets WebKitGTK size the middle from its content and bury the write box. The thread hides the native bar — WebKitGTK will not style it — and draws its own handle, sized to the day, so a tap or drag can jump.
 

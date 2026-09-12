@@ -1,4 +1,5 @@
 import { emit, human, openAgent, runTurn, type LiveAgent, type RunHandle, type SendRequest } from "./agent.ts";
+import { key, pick, type ModelSelection } from "./model.ts";
 import type { StopGate } from "./stop.ts";
 
 /** Holds one local agent for the window — same shape as the CLI. */
@@ -6,6 +7,7 @@ export function createRuntime() {
   let agent: LiveAgent | undefined;
   let cwd = "";
   let agentId: string | undefined;
+  let model: ModelSelection | undefined;
   let current: RunHandle | undefined;
 
   async function dispose() {
@@ -14,28 +16,33 @@ export function createRuntime() {
     agent = undefined;
     cwd = "";
     agentId = undefined;
+    model = undefined;
   }
 
-  async function attach(nextCwd: string, resumeId?: string | null) {
-    agent = await openAgent(nextCwd, resumeId);
+  async function attach(nextCwd: string, resumeId: string | null | undefined, next: ModelSelection) {
+    const picked = pick(next);
+    agent = await openAgent(nextCwd, resumeId, picked);
     cwd = nextCwd;
     agentId = agent.agentId;
+    model = picked;
     return agent;
   }
 
   async function ensure(req: SendRequest) {
-    const same = Boolean(agent && cwd === req.cwd && req.agentId && req.agentId === agentId);
+    const next = pick(req.model);
+    const same = Boolean(agent && cwd === req.cwd && req.agentId && req.agentId === agentId && model && key(model) === key(next));
     if (same) return agent as LiveAgent;
     await dispose();
-    return attach(req.cwd, req.agentId);
+    return attach(req.cwd, req.agentId, next);
   }
 
   async function reconnect() {
     const id = agentId;
     const dir = cwd;
+    const live = model;
     await dispose();
     if (!id || !dir) return;
-    await attach(dir, id);
+    await attach(dir, id, pick(live));
   }
 
   return {

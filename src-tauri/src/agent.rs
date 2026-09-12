@@ -1,4 +1,4 @@
-use crate::host::{Host, SendImage};
+use crate::host::{Host, ModelSelection, SendImage};
 use tauri::{AppHandle, State};
 
 /// Forwards a prompt to the durable host and waits for the turn to settle.
@@ -10,9 +10,10 @@ pub async fn cursor_send(
     cwd: String,
     agent_id: Option<String>,
     images: Option<Vec<SendImage>>,
+    model: Option<ModelSelection>,
 ) -> Result<(), String> {
     let host = host.inner().clone();
-    tauri::async_runtime::spawn_blocking(move || host.send(&app, &prompt, &cwd, agent_id.as_deref(), images.as_deref()))
+    tauri::async_runtime::spawn_blocking(move || host.send(&app, &prompt, &cwd, agent_id.as_deref(), images.as_deref(), model.as_ref()))
         .await
         .map_err(|err| err.to_string())?
 }

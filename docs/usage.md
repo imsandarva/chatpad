@@ -35,8 +35,12 @@ While a reply is coming in, the box stays yours. Keep writing. Send holds that n
 
 ## Settings
 
-**Settings** is one switch for now: **Markdown**. On (the default), Cursor’s replies use headings, lists, and code. Off, you see the raw text. Your own messages stay plain either way.
+**Settings** has two quiet choices.
+
+**Model** is who writes back: **Composer** for everyday writing, **Faster** for the same mind a little quicker, or **Auto** if you’d rather Cursor pick. The next send uses it. You cannot change it while a reply is still coming.
+
+**Markdown** is on by default. Cursor’s replies use headings, lists, and code. Off, you see the raw text. Your own messages stay plain either way.
 
 ## Closing the window
 
-The page you were on comes back when you open the window. Sign-in, the folder, and the Markdown switch do too. Earlier conversations in that folder are still there.
+The page you were on comes back when you open the window. Sign-in, the folder, the model, and the Markdown switch do too. Earlier conversations in that folder are still there.

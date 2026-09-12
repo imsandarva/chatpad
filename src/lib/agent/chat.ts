@@ -4,9 +4,11 @@ import { auth } from "$lib/auth/session.svelte";
 import { release, toPayload, type DraftPic } from "$lib/composer/images";
 import { take } from "$lib/composer/queue.svelte";
 import { addAssistant, addUser, appendDelta, applyWork, conversation, failAssistant, settleStopped } from "$lib/conversation/conversation.svelte";
-import { flush, note, openFolder } from "$lib/conversation/persist";
+import { flush, forgetAgent, note, openFolder } from "$lib/conversation/persist";
 import { rememberPics } from "$lib/conversation/store";
 import { isNativeShell } from "$lib/platform";
+import { selectionOf } from "$lib/settings/models";
+import { settings, whenModelChanges } from "$lib/settings/settings.svelte";
 import { loadWorkspace, workspace } from "$lib/workspace/workspace.svelte";
 
 type HostEvent =
@@ -27,6 +29,7 @@ function apply(event: HostEvent) {
 }
 
 export async function startAgentListener(): Promise<UnlistenFn> {
+  whenModelChanges(() => { void forgetAgent(); });
   if (!isNativeShell()) return () => {};
   return listen<HostEvent>("agent-event", (event) => apply(event.payload));
 }
@@ -53,7 +56,7 @@ export async function sendPrompt(prompt: string, pics: DraftPic[] = []) {
       return;
     }
     const images = pics.length ? await toPayload(pics) : [];
-    await invoke("cursor_send", { prompt, cwd: workspace.cwd, agentId: conversation.agentId, images });
+    await invoke("cursor_send", { prompt, cwd: workspace.cwd, agentId: conversation.agentId, images, model: selectionOf(settings.model) });
   } catch {
     if (conversation.stopping) settleStopped();
     else failAssistant("Couldn’t reach the agent. Try again.");

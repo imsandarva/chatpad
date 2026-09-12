@@ -1,5 +1,7 @@
 <script lang="ts">
-  import { closeSettings, setMarkdown, settings } from "./settings.svelte";
+  import { conversation } from "$lib/conversation/conversation.svelte";
+  import Choice from "./Choice.svelte";
+  import { closeSettings, setMarkdown, setModel, settings } from "./settings.svelte";
   import Toggle from "./Toggle.svelte";
 
   let pane: HTMLDialogElement | undefined = $state();
@@ -17,12 +19,19 @@
     <button type="button" class="done" onclick={closeSettings}>Done</button>
   </header>
 
-  <div class="row">
-    <div class="copy">
-      <p class="name">Markdown</p>
-      <p class="hint">Format replies with headings, lists, and code.</p>
+  <div class="stack">
+    <div class="row model">
+      <p class="name">Model</p>
+      <Choice value={settings.model} disabled={conversation.busy} onchange={setModel} />
     </div>
-    <Toggle checked={settings.markdown} label="Markdown" onchange={setMarkdown} />
+
+    <div class="row">
+      <div class="copy">
+        <p class="name">Markdown</p>
+        <p class="hint">Format replies with headings, lists, and code.</p>
+      </div>
+      <Toggle checked={settings.markdown} label="Markdown" onchange={setMarkdown} />
+    </div>
   </div>
 </dialog>
 
@@ -78,6 +87,12 @@
   .done:active { transform: scale(0.97); }
   .done:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 
+  .stack {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+  }
+
   .row {
     display: flex;
     align-items: center;
@@ -87,6 +102,12 @@
     border: 1px solid var(--well-edge);
     border-radius: 0.8rem;
     background: color-mix(in srgb, var(--ink) 2.5%, var(--well));
+  }
+
+  .row.model {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.7rem;
   }
 
   .copy { min-width: 0; }

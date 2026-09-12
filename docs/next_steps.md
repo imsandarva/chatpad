@@ -12,15 +12,16 @@ The first useful cut is a desk: sign in, pick a folder, write, see the work, Sto
 
 **Open a work line a little.** Tap a command or a file. The words open in place. Not a diff viewer.
 
+**Pick a model in Settings.** Composer, Faster, or Auto. The next send uses it.
+
 ## Do this next
 
-**Pick a model in Settings.**
+**Ship the window.**
 
-The host is pinned to `composer-2.5`. A choice here should feel like the rest of the desk — quiet, not a catalog.
+A `tauri build` and a `.desktop` file, so the desk is not a dev loop.
 
 ## Later, if the desk is already a habit
 
-- Ship the window (`tauri build`, a `.desktop` file) so it is not a dev loop.
 - See that you are on a Cursor plan, without bringing billing into the header.
 
 ## Not next

@@ -15,7 +15,7 @@ you type  →  the desk  →  Tauri  →  host/  →  Cursor agent
 ## A turn
 
 1. You send. The desk puts your bubble on the right — text and any pictures — and an empty Cursor bubble on the left. Pictures go with the text, not as a path the agent has to find.
-2. The first send in a folder creates a local agent (`composer-2.5`). The next send on that same folder reuses it — a follow-up, not a cold start.
+2. The first send in a folder creates a local agent with the model from Settings (Composer by default). The next send on that same folder reuses it — a follow-up, not a cold start. A new model starts a new agent on the next send.
 3. Tool calls arrive as work rows (`run.stream()`). Tokens arrive as they are written (`onDelta`).
 4. The run ends, or you **Stop**. If a next note was waiting, that send starts now — it was held out of the thread so this turn’s words still land on the right bubble.
 
