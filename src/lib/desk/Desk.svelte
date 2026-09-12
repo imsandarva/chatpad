@@ -51,7 +51,10 @@
   .desk {
     display: flex;
     flex-direction: column;
+    flex: 1 1 0%;
+    min-height: 0;
     height: 100%;
+    overflow: hidden;
     background:
       radial-gradient(ellipse 80% 50% at 50% 0%, color-mix(in srgb, var(--ink) 3.5%, transparent), transparent 70%),
       var(--bg);

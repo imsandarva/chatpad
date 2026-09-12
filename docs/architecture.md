@@ -36,7 +36,7 @@ Not used: Electron, Python/GTK for the app, Flutter (no first-party Cursor SDK).
 | `src/lib/workspace/` | Stored project folder (`cwd` for the agent) |
 | `host/` | Durable Node host — login, one live `Agent`, `send` / `run.cancel()`, work rows |
 | `host/work.ts` | Turns `tool_call` stream events into a short label |
-| `src/lib/transcript/` | Conversation pane — `Transcript` lists, `Turn` aligns, `Work` shows the steps, `Body` renders |
+| `src/lib/transcript/` | Conversation pane — `Transcript` lists, `follow` keeps the latest in view, `Turn` aligns, `Work` shows the steps, `Body` renders |
 | `src/lib/settings/` | Settings sheet — markdown on/off for now |
 | `src/lib/markdown/` | Safe markdown render (`marked` + DOMPurify) |
 | `src/lib/agent/` | Send, Stop, and stream listener |

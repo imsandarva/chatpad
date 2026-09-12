@@ -1,23 +1,14 @@
 <script lang="ts">
   import type { Message } from "$lib/types/message";
+  import { follow } from "./follow";
   import Turn from "./Turn.svelte";
 
   let { messages, busy = false, ready = true }: { messages: Message[]; busy?: boolean; ready?: boolean } = $props();
 
-  let pane: HTMLElement | undefined = $state();
   const pendingId = $derived(busy ? messages.findLast((message) => message.role === "assistant")?.id : undefined);
-
-  $effect(() => {
-    const last = messages.at(-1);
-    messages.length;
-    last?.text;
-    last?.blocks?.length;
-    last?.blocks?.map((block) => (block.kind === "work" ? block.status : block.text.length)).join();
-    pane?.scrollTo({ top: pane.scrollHeight });
-  });
 </script>
 
-<section class="transcript" aria-label="Conversation" bind:this={pane}>
+<section class="transcript" aria-label="Conversation" use:follow={messages.length}>
   {#if !ready}
     <div class="empty wait" aria-hidden="true"></div>
   {:else if messages.length === 0}
@@ -37,10 +28,15 @@
 
 <style>
   .transcript {
-    flex: 1 1 auto;
+    flex: 1 1 0%;
+    min-width: 0;
     min-height: 0;
-    overflow: auto;
-    contain: content;
+    overflow-x: hidden;
+    overflow-y: auto;
+    position: relative;
+    overscroll-behavior: contain;
+    overflow-anchor: none;
+    touch-action: pan-y;
     scrollbar-width: thin;
     scrollbar-color: var(--line) transparent;
   }

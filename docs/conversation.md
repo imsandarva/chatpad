@@ -28,7 +28,7 @@ A command shows the command. A file shows the name. The reply, if there is one, 
 
 ## While a reply is coming
 
-A step that is still running keeps a small pulse. If Cursor is writing, the last bubble stays open and a caret blinks at the end. The page follows the work down as it arrives.
+A step that is still running keeps a small pulse. If Cursor is writing, the last bubble stays open and a caret blinks at the end. The thread follows new words down, unless you scroll up to read — then it stays put until you return to the bottom.
 
 ## Stop and fail
 
