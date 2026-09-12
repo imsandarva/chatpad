@@ -1,23 +1,36 @@
 <script lang="ts">
+  import { sendPrompt, startAgentListener } from "$lib/agent/chat";
   import Account from "$lib/auth/Account.svelte";
   import Header from "$lib/chrome/Header.svelte";
   import Composer from "$lib/composer/Composer.svelte";
+  import { conversation } from "$lib/conversation/conversation.svelte";
   import Transcript from "$lib/transcript/Transcript.svelte";
-  import type { Message } from "$lib/types/message";
+  import Folder from "$lib/workspace/Folder.svelte";
+  import { onMount } from "svelte";
 
   let draft = $state("");
-  let messages = $state<Message[]>([]);
 
-  // Dead shell — the agent is wired in a later step.
-  function send() {}
+  onMount(() => {
+    let stop = () => {};
+    void startAgentListener().then((unlisten) => { stop = unlisten; });
+    return () => stop();
+  });
+
+  function send() {
+    const text = draft.trim();
+    if (!text || conversation.busy) return;
+    draft = "";
+    void sendPrompt(text);
+  }
 </script>
 
 <div class="desk">
   <Header>
-    <Account />
+    {#snippet start()}<Folder />{/snippet}
+    {#snippet end()}<Account />{/snippet}
   </Header>
-  <Transcript {messages} />
-  <Composer bind:value={draft} onsend={send} />
+  <Transcript messages={conversation.messages} busy={conversation.busy} />
+  <Composer bind:value={draft} disabled={conversation.busy} onsend={send} />
 </div>
 
 <style>

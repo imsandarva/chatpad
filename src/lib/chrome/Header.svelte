@@ -1,11 +1,13 @@
 <script lang="ts">
-  // Trailing slot is reserved for login and folder later.
-  let { children }: { children?: import("svelte").Snippet } = $props();
+  let { start, end }: { start?: import("svelte").Snippet; end?: import("svelte").Snippet } = $props();
 </script>
 
 <header class="header">
-  <p class="wordmark">Chatpad</p>
-  <div class="actions">{@render children?.()}</div>
+  <div class="lead">
+    <p class="wordmark">Chatpad</p>
+    {@render start?.()}
+  </div>
+  <div class="actions">{@render end?.()}</div>
 </header>
 
 <style>
@@ -13,10 +15,23 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 1rem;
     flex: 0 0 auto;
     height: 3.25rem;
     padding: 0 1.5rem;
     border-bottom: 1px solid var(--line);
+  }
+
+  .lead,
+  .actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-width: 0;
+  }
+
+  .actions {
+    justify-content: flex-end;
   }
 
   .wordmark {
@@ -25,12 +40,5 @@
     font-weight: 500;
     letter-spacing: 0.01em;
     line-height: 1;
-  }
-
-  .actions {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    min-height: 1rem;
   }
 </style>

@@ -1,6 +1,5 @@
+use crate::paths::node_host;
 use serde::{Deserialize, Serialize};
-use std::path::PathBuf;
-use std::process::Command;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(tag = "status", rename_all = "kebab-case")]
@@ -9,19 +8,12 @@ pub enum Session {
     LoggedIn { email: String, name: String },
 }
 
-fn project_root() -> PathBuf {
-    PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("..")
-}
-
 fn run_sync(action: &str) -> Result<Session, String> {
     if !matches!(action, "status" | "login" | "logout") {
         return Err("unknown auth action".into());
     }
 
-    let host = project_root().join("host/cli.ts");
-    let output = Command::new("node")
-        .current_dir(project_root())
-        .arg(&host)
+    let output = node_host()
         .arg(action)
         .output()
         .map_err(|err| format!("could not start node: {err}"))?;

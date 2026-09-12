@@ -1,9 +1,9 @@
 <script lang="ts">
   import { autosize } from "./autosize";
 
-  let { value = $bindable(""), onsend }: { value: string; onsend: () => void } = $props();
+  let { value = $bindable(""), disabled = false, onsend }: { value: string; disabled?: boolean; onsend: () => void } = $props();
 
-  const canSend = $derived(value.trim().length > 0);
+  const canSend = $derived(!disabled && value.trim().length > 0);
 
   function submit(event?: SubmitEvent) {
     event?.preventDefault();
@@ -29,12 +29,13 @@
       placeholder="Write a message"
       autocomplete="off"
       spellcheck="true"
+      disabled={disabled}
       bind:value
       use:autosize={value}
       onkeydown={onkeydown}
     ></textarea>
     <div class="bar">
-      <button type="submit" disabled={!canSend}>Send</button>
+      <button type="submit" disabled={!canSend}>{disabled ? "Sending" : "Send"}</button>
     </div>
   </div>
 </form>

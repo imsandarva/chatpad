@@ -29,11 +29,14 @@ Not used: Electron, Python/GTK for the app, Flutter (no first-party Cursor SDK).
 | `src/` | UI (SvelteKit) |
 | `src/routes/+page.svelte` | Thin entry — mounts the desk |
 | `src/lib/desk/` | Composes header, transcript, composer |
-| `src/lib/chrome/` | Window chrome (wordmark; folder later) |
+| `src/lib/chrome/` | Window chrome (wordmark, shared header controls) |
 | `src/lib/auth/` | Sign-in control and session state |
-| `host/` | Node host — `Cursor.auth.login()`, status, logout |
+| `src/lib/workspace/` | Stored project folder (`cwd` for the agent) |
+| `host/` | Node host — login and `Agent.create` / `send` stream |
 | `src/lib/transcript/` | Conversation pane |
-| `src/lib/composer/` | Writing well (Send is idle) |
+| `src/lib/agent/` | Send + stream listener |
+| `src/lib/conversation/` | Transcript messages and agent id |
+| `src/lib/composer/` | Writing well |
 | `src/lib/types/` | Shared shapes |
 | `src/app.css` | Tokens and reset |
 | `src-tauri/` | Native window (Rust crate `chatpad` / `chatpad_lib`) |
@@ -42,7 +45,9 @@ Not used: Electron, Python/GTK for the app, Flutter (no first-party Cursor SDK).
 
 App id: `com.chatpad.app`. Window title: Chatpad.
 
-The UI is a composition layer: routes wire modules, modules own one pane. Login is wired. Send does not call the agent yet.
+The UI is a composition layer: routes wire modules, modules own one pane. Login, folder, and Send are wired.
+
+Send runs `Agent.create({ local: { cwd } })` (or `Agent.resume`) in the Node host. Tokens come back as NDJSON, Rust emits `agent-event`, and the transcript appends them. Follow-ups reuse the same agent id for that folder.
 
 ## Runtime dependencies
 
@@ -50,6 +55,7 @@ The UI is a composition layer: routes wire modules, modules own one pane. Login 
 
 - `@cursor/sdk` — login, local agent, streaming
 - `@tauri-apps/cli`, `@tauri-apps/api`, `@tauri-apps/plugin-opener`
+- `tauri-plugin-dialog` — native folder picker (Rust; UI invokes `pick_workspace`)
 - Svelte 5, SvelteKit, Vite, TypeScript
 - `tauri` 2, `serde` (Rust)
 

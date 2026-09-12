@@ -36,12 +36,12 @@ npm install
 npm run tauri dev
 ```
 
-`cargo check` in `src-tauri/` should pass. The window is a two-pane desk: transcript above, composer below. Sign in (header) opens a Cursor browser login via the Node host. Send does nothing yet.
+`cargo check` in `src-tauri/` should pass. The window is a two-pane desk: transcript above, composer below. Sign in, pick a folder, write, and Send. Replies stream into the transcript from the local Cursor agent.
 
 Login stores a key at `~/.cursor/sdk/auth.json`. The UI never sees that key.
 
 ## Status
 
-Done: toolchain, scaffold, rename to Chatpad, `cargo check`, desk shell, Cursor login.
+Done: toolchain, scaffold, desk shell, Cursor login, stored folder, Send → streamed reply.
 
-Not done: folder picker, Send → streamed reply.
+That is the first useful cut.

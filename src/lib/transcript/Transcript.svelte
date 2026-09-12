@@ -1,10 +1,19 @@
 <script lang="ts">
   import type { Message } from "$lib/types/message";
 
-  let { messages }: { messages: Message[] } = $props();
+  let { messages, busy = false }: { messages: Message[]; busy?: boolean } = $props();
+
+  let pane: HTMLElement | undefined = $state();
+  const pendingId = $derived(busy ? messages.findLast((message) => message.role === "assistant")?.id : undefined);
+
+  $effect(() => {
+    messages.length;
+    messages.at(-1)?.text;
+    pane?.scrollTo({ top: pane.scrollHeight });
+  });
 </script>
 
-<section class="transcript" aria-label="Conversation">
+<section class="transcript" aria-label="Conversation" bind:this={pane}>
   {#if messages.length === 0}
     <div class="empty">
       <span class="mark" aria-hidden="true"></span>
@@ -14,7 +23,7 @@
   {:else}
     <ol class="thread">
       {#each messages as message (message.id)}
-        <li class="turn" data-role={message.role}>
+        <li class="turn" data-role={message.role} data-pending={message.id === pendingId} data-failed={message.failed}>
           <span class="who">{message.role === "user" ? "You" : "Chatpad"}</span>
           <p>{message.text}</p>
         </li>
@@ -76,6 +85,10 @@
     list-style: none;
   }
 
+  .turn {
+    animation: rise 0.35s var(--ease) both;
+  }
+
   .turn + .turn {
     margin-top: 1.5rem;
   }
@@ -101,6 +114,17 @@
     overflow-wrap: anywhere;
   }
 
+  .turn[data-failed="true"] p {
+    color: var(--danger);
+  }
+
+  .turn[data-pending="true"] p::after {
+    content: "▍";
+    margin-left: 0.12em;
+    opacity: 0.4;
+    animation: blink 1s step-end infinite;
+  }
+
   @keyframes rise {
     from {
       opacity: 0;
@@ -110,5 +134,9 @@
       opacity: 1;
       transform: translateY(0);
     }
+  }
+
+  @keyframes blink {
+    50% { opacity: 0; }
   }
 </style>

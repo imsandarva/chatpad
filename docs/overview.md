@@ -18,6 +18,6 @@ A native window with:
 
 Same agent, machine, folders, and usage pool as the CLI and the IDE. Not a code editor. Large diffs still belong in the project. Daily ask / tell / paste / go lives here.
 
-This is personal software. The first useful cut is login, a folder, a composer, and a streamed reply. After that it changes as it is used. The composer is the product.
+This is personal software. The first useful cut is in: login, a folder, a composer, and a streamed reply. After that it changes as it is used. The composer is the product.
 
 The goal here is to build step by step, not at once. This chatpad should be equiavalent to native terminal CLI: meaning it should be able to run and execute commands or anything like it happens in CLI.

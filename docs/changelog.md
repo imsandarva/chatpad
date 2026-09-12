@@ -12,6 +12,8 @@ Format: [Keep a Changelog](https://keepachangelog.com/). Versioning is informal 
 - Product, architecture, and setup docs.
 - Two-pane desk UI: empty transcript and a real composer (Send idle).
 - Cursor login in the header (`Cursor.auth.login()` via the Node host); shows who you are.
+- Stored project folder in the header (defaults to this repo; native picker can change it).
+- Send streams a local Cursor agent reply into the transcript (`Agent.create` / `agent.send`).
 
 ### Changed
 
