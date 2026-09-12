@@ -1,0 +1,56 @@
+# Dependencies
+node_modules/
+
+# SvelteKit / Vite
+.svelte-kit/
+build/
+dist/
+package/
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
+
+# Tauri / Rust
+src-tauri/target/
+src-tauri/gen/schemas
+*.exe
+*.dmg
+*.AppImage
+*.deb
+*.rpm
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Logs and debug
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Test / coverage
+coverage/
+.nyc_output/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+*~
+
+# Editors
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+*.swp
+*.swo
+.cursor/
+
+# TypeScript
+*.tsbuildinfo

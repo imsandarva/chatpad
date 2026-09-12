@@ -1,0 +1,17 @@
+# Changelog
+
+Format: [Keep a Changelog](https://keepachangelog.com/). Versioning is informal until 1.0.
+
+## [0.1.0] — 2026-09-12
+
+### Added
+
+- Tauri 2 + SvelteKit + TypeScript scaffold (`com.chatpad.app`).
+- `@cursor/sdk` as a project dependency (not wired to the UI yet).
+- Isolated toolchain: nvm Node 22, rustup 1.98, apt WebKit/GTK `-dev` packages.
+- Product, architecture, and setup docs.
+
+### Changed
+
+- Template names (`tauri-app`) replaced with Chatpad (`chatpad` / `chatpad_lib`).
+- Template README removed.
