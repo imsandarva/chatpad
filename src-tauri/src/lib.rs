@@ -3,6 +3,7 @@ mod auth_store;
 mod cursor;
 mod host;
 mod paths;
+mod pictures;
 mod workspace;
 
 use tauri::Manager;
@@ -24,7 +25,9 @@ pub fn run() {
             agent::cursor_stop,
             cursor::cursor_session,
             workspace::default_workspace,
-            workspace::pick_workspace
+            workspace::pick_workspace,
+            pictures::read_pictures,
+            pictures::clipboard_attach
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

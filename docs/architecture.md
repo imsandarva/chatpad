@@ -42,6 +42,7 @@ Not used: Electron, Python/GTK for the app, Flutter (no first-party Cursor SDK).
 | `src/lib/agent/` | Send, Stop, and stream listener |
 | `src/lib/conversation/` | Transcript messages and agent id |
 | `src/lib/composer/` | Writing well — text, paste/drop pictures, thumbnails |
+| `src-tauri/src/pictures.rs` | Native attach — GTK clipboard + dropped image files |
 | `src/lib/types/` | Shared shapes |
 | `src/app.css` | Tokens and reset |
 | `src-tauri/` | Native window (Rust crate `chatpad` / `chatpad_lib`) |
@@ -54,6 +55,8 @@ App id: `com.chatpad.app`. Window title: Chatpad.
 
 The UI is a composition layer: routes wire modules, modules own one pane. Login, folder, Send, Stop, Settings, and the chat thread are wired. Settings is a dialog. Markdown is on by default for Cursor’s replies. Your messages sit on the right; Cursor’s sit on the left.
 
+On Linux the composer asks Rust for pictures the page cannot see: GTK clipboard for a copy, and `read_pictures` for a drop or a file URI. `dragDropEnabled` stays on so Tauri’s `onDragDropEvent` fires.
+
 The window starts one Node host and keeps it. The first send creates (or resumes) a local agent; later sends reuse that handle. Text deltas and tool-call rows come back as NDJSON, Rust emits `agent-event`, and the transcript appends them. A folder change disposes and opens a new agent. Stop writes a cancel line; partial text and work stay. Detail is in [agent](./agent.md).
 
 ## Runtime dependencies
@@ -65,7 +68,8 @@ The window starts one Node host and keeps it. The first send creates (or resumes
 - `tauri-plugin-dialog` — native folder picker (Rust; UI invokes `pick_workspace`)
 - Svelte 5, SvelteKit, Vite, TypeScript
 - `marked`, `dompurify` — formatted replies, sanitized
-- `tauri` 2, `serde` (Rust)
+- `tauri` 2, `serde`, `base64` (Rust)
+- Linux: `gtk` / `gdk` / `gdk-pixbuf` — clipboard pictures the webview cannot see
 
 **Machine**
 

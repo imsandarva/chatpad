@@ -17,6 +17,10 @@ Format: [Keep a Changelog](https://keepachangelog.com/). Versioning is informal 
 - Stop cancels the in-flight run (`run.cancel()`) and keeps whatever text already arrived.
 - Settings in the header, with a Markdown switch for formatted or raw replies.
 
+### Fixed
+
+- Pasting a copied picture and dropping one from the file manager now attach in the composer. WebKitGTK never handed those to the page; the window reads them natively.
+
 ### Changed
 
 - You can paste or drop a picture in the composer, see a thumbnail, and send it with the message.

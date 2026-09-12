@@ -1,6 +1,9 @@
 <script lang="ts">
+  import { onMount } from "svelte";
+  import { inspectPaste, pathsFromWeb } from "./attach";
   import { autosize } from "./autosize";
   import { filesFrom, MAX_PICS, release, toDraft, type DraftPic } from "./images";
+  import { clipboardAttach, filesFromPaths, listenFileDrop, type NativePics } from "./native";
   import Thumbs from "./Thumbs.svelte";
 
   let {
@@ -49,10 +52,16 @@
     const next: DraftPic[] = [];
     for (const file of files.slice(0, room)) {
       try { next.push(await toDraft(file)); }
-      catch { hint = "That picture is too large."; }
+      catch (err) { hint = err instanceof Error && err.message === "too-big" ? "That picture is too large." : "Couldn’t use that picture."; }
     }
     if (next.length) pics = [...pics, ...next];
     if (files.length > room) hint = "That’s enough pictures for one message.";
+  }
+
+  async function accept(result: NativePics, emptyHint = false) {
+    if (result.files.length) await take(result.files);
+    if (result.oversize) hint = "That picture is too large.";
+    else if (!result.files.length && emptyHint) hint = "That isn’t a picture.";
   }
 
   function drop(id: string) {
@@ -61,11 +70,22 @@
     pics = pics.filter((pic) => pic.id !== id);
   }
 
-  function onpaste(event: ClipboardEvent) {
-    const files = filesFrom(event);
-    if (!files.length) return;
-    if (!event.clipboardData?.getData("text")) event.preventDefault();
-    void take(files);
+  async function onpaste(event: ClipboardEvent) {
+    const peek = inspectPaste(event);
+    if (peek.files.length) {
+      if (!peek.hasText) event.preventDefault();
+      await take(peek.files);
+      return;
+    }
+    if (peek.paths.length) {
+      event.preventDefault();
+      await accept(await filesFromPaths(peek.paths), true);
+      return;
+    }
+    if (peek.hasText) return;
+    event.preventDefault();
+    const native = await clipboardAttach();
+    if (native.files.length || native.oversize) await accept(native);
   }
 
   function ondragenter(event: DragEvent) {
@@ -83,11 +103,20 @@
     if (event.dataTransfer) event.dataTransfer.dropEffect = "copy";
   }
 
-  function ondrop(event: DragEvent) {
+  async function ondrop(event: DragEvent) {
     event.preventDefault();
     hover = 0;
-    if (event.dataTransfer) void take(filesFrom(event.dataTransfer));
+    const files = event.dataTransfer ? filesFrom(event.dataTransfer) : [];
+    if (files.length) { await take(files); return; }
+    const paths = pathsFromWeb(event.dataTransfer ?? null);
+    if (paths.length) await accept(await filesFromPaths(paths), true);
   }
+
+  onMount(() => {
+    let stop = () => {};
+    void listenFileDrop((over) => { hover = over ? 1 : 0; }, (pics) => void accept(pics, true)).then((unlisten) => { stop = unlisten; });
+    return () => stop();
+  });
 
   $effect(() => {
     if (!disabled) return;
@@ -107,6 +136,8 @@
     <Thumbs images={pics} onremove={disabled ? undefined : drop} />
     {#if hint}
       <p class="hint">{hint}</p>
+    {:else if hover > 0}
+      <p class="hint">Drop to attach</p>
     {/if}
     <label class="sr" for="composer-input">Message</label>
     <textarea
