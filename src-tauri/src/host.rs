@@ -139,4 +139,12 @@ impl Host {
             let _ = pipe.flush();
         }
     }
+
+    pub fn dispose(&self) {
+        let mut stdin = self.0.stdin.lock().expect("host stdin");
+        if let Some(pipe) = stdin.as_mut() {
+            let _ = writeln!(pipe, "{}", serde_json::json!({ "type": "dispose" }));
+            let _ = pipe.flush();
+        }
+    }
 }

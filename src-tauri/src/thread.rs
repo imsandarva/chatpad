@@ -1,4 +1,4 @@
-//! One JSON file per folder — the thread and agent id survive a closed window.
+//! One JSON file per folder — every conversation in that folder, and which one is open.
 
 use sha2::{Digest, Sha256};
 use std::path::PathBuf;

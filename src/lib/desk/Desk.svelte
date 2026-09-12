@@ -6,6 +6,8 @@
   import type { DraftPic } from "$lib/composer/images";
   import { conversation } from "$lib/conversation/conversation.svelte";
   import { openFolder, startPersistence } from "$lib/conversation/persist";
+  import Earlier from "$lib/conversation/Earlier.svelte";
+  import New from "$lib/conversation/New.svelte";
   import Transcript from "$lib/transcript/Transcript.svelte";
   import Settings from "$lib/settings/Settings.svelte";
   import Folder from "$lib/workspace/Folder.svelte";
@@ -41,7 +43,7 @@
 <div class="desk">
   <Header>
     {#snippet start()}<Folder />{/snippet}
-    {#snippet end()}<Settings /><Account />{/snippet}
+    {#snippet end()}<New /><Earlier /><Settings /><Account />{/snippet}
   </Header>
   <Transcript messages={conversation.messages} busy={conversation.busy} ready={conversation.ready} />
   <Composer bind:value={draft} bind:pics disabled={conversation.busy} stopping={conversation.stopping} onsend={send} onstop={() => void stopPrompt()} />

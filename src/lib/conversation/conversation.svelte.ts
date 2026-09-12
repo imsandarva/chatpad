@@ -3,6 +3,7 @@ import type { Block, Message, Pic, Work } from "$lib/types/message";
 export const conversation = $state({
   messages: [] as Message[],
   agentId: null as string | null,
+  threadId: "",
   cwd: "",
   ready: false,
   busy: false,

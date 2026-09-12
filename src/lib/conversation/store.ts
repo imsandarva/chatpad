@@ -6,7 +6,11 @@ import type { Block, Message, Pic } from "$lib/types/message";
 
 export type StoredPic = { id: string; name: string; mime: string; data: string };
 export type StoredMessage = Omit<Message, "pics"> & { pics?: StoredPic[] };
-export type StoredThread = { v: 1; cwd: string; agentId: string | null; messages: StoredMessage[] };
+export type StoredChat = { id: string; title: string; updatedAt: number; agentId: string | null; messages: StoredMessage[] };
+export type StoredFolder = { v: 2; cwd: string; activeId: string; chats: StoredChat[] };
+type StoredV1 = { v: 1; cwd: string; agentId: string | null; messages: StoredMessage[] };
+
+export type ChatIndex = { id: string; title: string; updatedAt: number };
 
 const pics = new Map<string, StoredPic>();
 
@@ -17,40 +21,76 @@ export async function rememberPics(drafts: DraftPic[]) {
   }));
 }
 
-export function encodeThread(cwd: string, agentId: string | null, messages: Message[]): StoredThread | null {
-  if (!cwd || (!messages.length && !agentId)) return null;
-  return { v: 1, cwd, agentId, messages: messages.map(encodeMessage) };
+export function titleFrom(messages: { role?: string; text?: string; pics?: unknown[] }[]): string {
+  const user = messages.find((message) => message.role === "user");
+  const text = user?.text?.replace(/\s+/g, " ").trim() ?? "";
+  if (text) return text.length > 40 ? `${text.slice(0, 39).trimEnd()}…` : text;
+  if (user?.pics?.length) return "A few pictures";
+  return "A conversation";
 }
 
-export async function decodeThread(raw: StoredThread): Promise<{ agentId: string | null; messages: Message[] }> {
-  const messages = await Promise.all(raw.messages.map(decodeMessage));
+export function encodeChat(id: string, agentId: string | null, messages: Message[]): StoredChat {
+  return { id, title: titleFrom(messages), updatedAt: Date.now(), agentId, messages: messages.map(encodeMessage) };
+}
+
+export async function decodeChat(chat: StoredChat): Promise<{ agentId: string | null; messages: Message[] }> {
+  const messages = await Promise.all(chat.messages.map(decodeMessage));
   const last = messages.at(-1);
   if (last?.role === "assistant" && !last.text && !last.blocks?.length && !last.failed) last.stopped = true;
-  return { agentId: raw.agentId, messages };
+  return { agentId: chat.agentId, messages };
+}
+
+export function emptyFolder(cwd: string, activeId: string): StoredFolder {
+  return { v: 2, cwd, activeId, chats: [] };
+}
+
+/** Park or refresh one chat; drop empty pages that are not the one you are on. */
+export function upsertChat(folder: StoredFolder, chat: StoredChat, activeId: string): StoredFolder {
+  const chats = folder.chats.filter((item) => item.id !== chat.id);
+  chats.push(chat);
+  return { v: 2, cwd: folder.cwd, activeId, chats: chats.filter((item) => item.id === activeId || item.messages.length || item.agentId) };
+}
+
+export function indexOf(folder: StoredFolder, activeId: string): ChatIndex[] {
+  return folder.chats
+    .filter((chat) => chat.id !== activeId && (chat.messages.length || chat.agentId))
+    .sort((a, b) => b.updatedAt - a.updatedAt)
+    .map(({ id, title, updatedAt }) => ({ id, title, updatedAt }));
 }
 
 export function forgetPics(messages: Message[]) {
   for (const message of messages) for (const pic of message.pics ?? []) release(pic);
 }
 
-export async function readThread(cwd: string): Promise<StoredThread | null> {
+export async function readFolder(cwd: string): Promise<StoredFolder | null> {
   if (!cwd) return null;
   try {
     const raw = isNativeShell() ? await invoke<string | null>("thread_load", { cwd }) : localStorage.getItem(webKey(cwd));
     if (!raw) return null;
-    const stored = JSON.parse(raw) as StoredThread;
-    return stored.v === 1 && stored.cwd === cwd && Array.isArray(stored.messages) ? stored : null;
+    return migrate(JSON.parse(raw), cwd);
   } catch {
     return null;
   }
 }
 
-export async function writeThread(thread: StoredThread) {
-  const body = JSON.stringify(thread);
+export async function writeFolder(folder: StoredFolder) {
   try {
-    if (isNativeShell()) await invoke("thread_save", { cwd: thread.cwd, body });
-    else localStorage.setItem(webKey(thread.cwd), body);
+    const body = JSON.stringify(folder);
+    if (isNativeShell()) await invoke("thread_save", { cwd: folder.cwd, body });
+    else localStorage.setItem(webKey(folder.cwd), body);
   } catch { /* disk or quota */ }
+}
+
+function migrate(raw: unknown, cwd: string): StoredFolder | null {
+  if (!raw || typeof raw !== "object") return null;
+  const row = raw as StoredFolder | StoredV1;
+  if (row.v === 2 && row.cwd === cwd && Array.isArray((row as StoredFolder).chats)) return row as StoredFolder;
+  if (row.v === 1 && row.cwd === cwd && Array.isArray((row as StoredV1).messages)) {
+    const id = crypto.randomUUID();
+    const chat = { id, title: titleFrom((row as StoredV1).messages), updatedAt: Date.now(), agentId: row.agentId, messages: (row as StoredV1).messages };
+    return { v: 2, cwd, activeId: id, chats: chat.messages.length || chat.agentId ? [chat] : [] };
+  }
+  return null;
 }
 
 function encodeMessage(message: Message): StoredMessage {

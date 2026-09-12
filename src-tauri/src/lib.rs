@@ -24,6 +24,7 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             agent::cursor_send,
             agent::cursor_stop,
+            agent::cursor_dispose,
             cursor::cursor_session,
             workspace::default_workspace,
             workspace::pick_workspace,

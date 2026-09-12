@@ -19,7 +19,7 @@ you type  →  the desk  →  Tauri  →  host/  →  Cursor agent
 3. Tool calls arrive as work rows (`run.stream()`). Tokens arrive as they are written (`onDelta`).
 4. The run ends, or you **Stop**.
 
-Changing the folder disposes that agent and opens a new one. Closing the agent after every reply was what made Chatpad feel slower than the CLI.
+Changing the folder disposes that agent and opens a new one. **New** does the same without leaving the folder — the next send is `Agent.create`, not a resume of yesterday. Opening an earlier page resumes that page’s agent. Closing the agent after every reply was what made Chatpad feel slower than the CLI.
 
 ## Stop
 

@@ -22,3 +22,9 @@ pub async fn cursor_send(
 pub fn cursor_stop(host: State<'_, Host>) {
     host.stop();
 }
+
+/// Closes the live agent so the next send can be a new session.
+#[tauri::command]
+pub fn cursor_dispose(host: State<'_, Host>) {
+    host.dispose();
+}

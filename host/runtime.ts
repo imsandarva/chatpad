@@ -13,6 +13,7 @@ export function createRuntime() {
     agent?.close();
     agent = undefined;
     cwd = "";
+    agentId = undefined;
   }
 
   async function attach(nextCwd: string, resumeId?: string | null) {
@@ -23,7 +24,8 @@ export function createRuntime() {
   }
 
   async function ensure(req: SendRequest) {
-    if (agent && cwd === req.cwd) return agent;
+    const same = Boolean(agent && cwd === req.cwd && req.agentId && req.agentId === agentId);
+    if (same) return agent as LiveAgent;
     await dispose();
     return attach(req.cwd, req.agentId);
   }

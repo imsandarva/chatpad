@@ -41,10 +41,10 @@ Not used: Electron, Python/GTK for the app, Flutter (no first-party Cursor SDK).
 | `src/lib/settings/` | Settings sheet — markdown on/off for now |
 | `src/lib/markdown/` | Safe markdown render (`marked` + DOMPurify) |
 | `src/lib/agent/` | Send, Stop, and stream listener |
-| `src/lib/conversation/` | Transcript messages, agent id, and per-folder persist |
+| `src/lib/conversation/` | Live thread, earlier pages in the folder, New / Earlier, persist |
 | `src/lib/composer/` | Writing well — text, paste/drop pictures, thumbnails |
 | `src-tauri/src/pictures.rs` | Native attach — GTK clipboard + dropped image files |
-| `src-tauri/src/thread.rs` | One JSON file per folder in the app data dir |
+| `src-tauri/src/thread.rs` | One JSON file per folder — every conversation, and which one is open |
 | `src/lib/types/` | Shared shapes |
 | `src/app.css` | Tokens and reset |
 | `src-tauri/` | Native window (Rust crate `chatpad` / `chatpad_lib`) |
@@ -63,7 +63,7 @@ On Linux the composer asks Rust for pictures the page cannot see: GTK clipboard 
 
 The window starts one Node host and keeps it. The first send creates (or resumes) a local agent; later sends reuse that handle. Text deltas and tool-call rows come back as NDJSON, Rust emits `agent-event`, and the transcript appends them. A folder change disposes and opens a new agent. Stop writes a cancel line; partial text and work stay. Detail is in [agent](./agent.md).
 
-Each folder’s thread is a JSON file under the app data dir (`threads/<hash>.json`). The page writes on a short debounce and flushes when a turn settles or the window closes. The next open loads that file and resumes the stored agent id.
+Each folder’s conversations live in one JSON file under the app data dir (`threads/<hash>.json`). Version 1 files (a single thread) become version 2 (a list, plus which page is open) the next time they are read. The page writes on a short debounce and flushes when a turn settles or the window closes. The next open loads the page you left. The host only reuses a live agent when the folder and the agent id still match — a new page is a new `Agent.create`.
 
 ## Runtime dependencies
 
