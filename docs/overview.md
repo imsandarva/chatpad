@@ -12,7 +12,7 @@ The Cursor CLI is light, but the prompt is not a real text field. Long messages 
 
 A native window with:
 
-- a conversation transcript
+- a conversation transcript (yours on the right, Cursor’s on the left)
 - a real composer (word motions, full paste, selection, image thumbnails, custom shortcuts)
 - the official Cursor agent behind Send (`@cursor/sdk`, local runtime, the user’s Cursor account)
 

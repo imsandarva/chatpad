@@ -36,7 +36,7 @@ npm install
 npm run tauri dev
 ```
 
-`cargo check` in `src-tauri/` should pass. The window is a two-pane desk: transcript above, composer below. Sign in, pick a folder, write, and Send. The host stays warm so follow-ups are just another `send`, not a new process. Stop (or Escape) ends a reply that is still coming. Settings lets you show replies as Markdown or as the raw text.
+`cargo check` in `src-tauri/` should pass. The window is a two-pane desk: transcript above, composer below. Your messages sit on the right; Cursor’s sit on the left. Sign in, pick a folder, write, and Send. The host stays warm so follow-ups are just another `send`, not a new process. Stop (or Escape) ends a reply that is still coming. Settings lets you show replies as Markdown or as the raw text.
 
 Login stores a key at `~/.cursor/sdk/auth.json`. The UI never sees that key. The next open reads that file locally and shows who you are without waiting.
 

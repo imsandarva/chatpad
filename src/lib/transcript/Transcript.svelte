@@ -1,7 +1,6 @@
 <script lang="ts">
-  import { settings } from "$lib/settings/settings.svelte";
   import type { Message } from "$lib/types/message";
-  import Body from "./Body.svelte";
+  import Turn from "./Turn.svelte";
 
   let { messages, busy = false }: { messages: Message[]; busy?: boolean } = $props();
 
@@ -25,16 +24,7 @@
   {:else}
     <ol class="thread">
       {#each messages as message (message.id)}
-        <li class="turn" data-role={message.role} data-pending={message.id === pendingId} data-failed={message.failed} data-stopped={message.stopped}>
-          <span class="who">{message.role === "user" ? "You" : "Chatpad"}</span>
-          <Body
-            text={message.text || (message.stopped ? "You stopped this reply." : "")}
-            markdown={settings.markdown && message.role === "assistant" && Boolean(message.text)}
-            pending={message.id === pendingId}
-            quiet={Boolean(message.stopped && !message.text)}
-            failed={Boolean(message.failed)}
-          />
-        </li>
+        <Turn {message} pending={message.id === pendingId} />
       {/each}
     </ol>
   {/if}
@@ -87,29 +77,27 @@
   }
 
   .thread {
+    display: flex;
+    flex-direction: column;
     max-width: var(--measure);
     margin: 0 auto;
-    padding: 1.75rem 1.5rem 2rem;
+    padding: 1.5rem 1.15rem 1.75rem;
     list-style: none;
   }
 
-  .turn {
-    animation: rise 0.35s var(--ease) both;
+  .thread :global(.turn + .turn) {
+    margin-top: 0.38rem;
   }
 
-  .turn + .turn {
-    margin-top: 1.5rem;
+  .thread :global(.turn[data-role="user"] + .turn[data-role="assistant"]),
+  .thread :global(.turn[data-role="assistant"] + .turn[data-role="user"]) {
+    margin-top: 1.05rem;
   }
 
-  .who {
-    display: block;
-    margin-bottom: 0.35rem;
-    font-size: 0.75rem;
-    font-weight: 500;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    color: var(--ink-soft);
-  }
+  .thread :global(.turn[data-role="user"]:has(+ .turn[data-role="user"]) .bubble) { border-bottom-right-radius: 1.2rem; }
+  .thread :global(.turn[data-role="user"] + .turn[data-role="user"] .bubble) { border-top-right-radius: 0.4rem; }
+  .thread :global(.turn[data-role="assistant"]:has(+ .turn[data-role="assistant"]) .bubble) { border-bottom-left-radius: 1.2rem; }
+  .thread :global(.turn[data-role="assistant"] + .turn[data-role="assistant"] .bubble) { border-top-left-radius: 0.4rem; }
 
   @keyframes rise {
     from {
@@ -121,5 +109,4 @@
       transform: translateY(0);
     }
   }
-
 </style>

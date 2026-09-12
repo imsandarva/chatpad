@@ -30,7 +30,7 @@
     margin: 0;
     font-size: 0.96875rem;
     line-height: 1.6;
-    color: var(--ink);
+    color: var(--bubble-ink, var(--ink));
     overflow-wrap: anywhere;
   }
 
@@ -46,6 +46,7 @@
   .md[data-pending="true"]::after {
     content: "▍";
     margin-left: 0.12em;
+    color: currentColor;
     opacity: 0.4;
     animation: blink 1s step-end infinite;
   }
@@ -88,7 +89,7 @@
   }
 
   .md :global(a) {
-    color: var(--ink);
+    color: inherit;
     text-underline-offset: 0.12em;
   }
 

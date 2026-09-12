@@ -19,6 +19,7 @@ Format: [Keep a Changelog](https://keepachangelog.com/). Versioning is informal 
 
 ### Changed
 
+- The transcript is a chat thread: your messages on the right, Cursor’s on the left.
 - Template names (`tauri-app`) replaced with Chatpad (`chatpad` / `chatpad_lib`).
 - Template README removed.
 - Opening the window no longer waits on Node for a status check; the last account shows immediately, and “Waiting for Cursor…” is only for Sign in.
