@@ -11,6 +11,8 @@ composer / transcript  →  Tauri invoke  →  host/ (Node)  →  @cursor/sdk  �
 
 The UI owns input and display. The host is the only process that imports `@cursor/sdk` — WebKit cannot run it. Credentials stay in `~/.cursor/sdk/auth.json`; the UI receives name and email only. Status on launch is a local read of that file (no Node, no network). Login and logout still go through the host. Cursor owns the agent. Usage bills to the same plan as the IDE and CLI.
 
+How a turn feels is in [usage](./usage.md) and [conversation](./conversation.md). How a send actually moves is in [agent](./agent.md).
+
 ## Why this stack
 
 | Choice | Instead of | Reason |
@@ -49,11 +51,9 @@ Not used: Electron, Python/GTK for the app, Flutter (no first-party Cursor SDK).
 
 App id: `com.chatpad.app`. Window title: Chatpad.
 
-The UI is a composition layer: routes wire modules, modules own one pane. Login, folder, Send, Stop, and Settings are wired. Settings is a native dialog. Markdown is on by default for assistant replies; turning it off shows the raw text. Your messages sit on the right; Cursor’s sit on the left — the usual chat thread.
+The UI is a composition layer: routes wire modules, modules own one pane. Login, folder, Send, Stop, Settings, and the chat thread are wired. Settings is a dialog. Markdown is on by default for Cursor’s replies. Your messages sit on the right; Cursor’s sit on the left.
 
-The window starts one Node host and keeps it. The first send creates (or resumes) a local agent; later sends call `agent.send()` on that same handle — the CLI shape. Tokens come back as NDJSON, Rust emits `agent-event`, and the transcript appends them. A folder change disposes and opens a new agent. Closing the agent after every turn was what made replies feel slower than the CLI.
-
-Stop writes a cancel line to the host’s stdin (Escape does the same). The host calls `run.cancel()`, the stream ends with `cancelled`, and partial text stays.
+The window starts one Node host and keeps it. The first send creates (or resumes) a local agent; later sends reuse that handle. Tokens come back as NDJSON, Rust emits `agent-event`, and the transcript appends them. A folder change disposes and opens a new agent. Stop writes a cancel line; partial text stays. Detail is in [agent](./agent.md).
 
 ## Runtime dependencies
 

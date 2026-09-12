@@ -19,6 +19,7 @@ Format: [Keep a Changelog](https://keepachangelog.com/). Versioning is informal 
 
 ### Changed
 
+- Docs now cover the desk, the thread, and the agent path — not only setup.
 - The transcript is a chat thread: your messages on the right, Cursor’s on the left.
 - Template names (`tauri-app`) replaced with Chatpad (`chatpad` / `chatpad_lib`).
 - Template README removed.

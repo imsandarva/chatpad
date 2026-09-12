@@ -1,0 +1,36 @@
+# Using Chatpad
+
+The window is a desk: header on top, conversation in the middle, composer at the bottom.
+
+## Sign in
+
+**Sign in** opens Cursor’s login. When it works, the header shows your name. **Sign out** clears it.
+
+The key stays in `~/.cursor/sdk/auth.json`. Chatpad only keeps your name and email so the next open can greet you without waiting. Sign in from the Chatpad window — a browser tab cannot finish it.
+
+## Pick a folder
+
+The header button is the project folder. It starts as this repo. Click it to pick another.
+
+That folder is the agent’s working directory — same idea as opening a project in the CLI. A new folder starts a new agent. The same folder, in the same window, keeps the thread going.
+
+## Write
+
+The box at the bottom is a real text field. Type as you would anywhere else.
+
+| | |
+| --- | --- |
+| **Enter** | Send |
+| **Shift + Enter** | New line |
+| **Send** | Same as Enter |
+| **Stop** or **Escape** | End a reply that is still coming |
+
+Send is quiet until there is something to send. While a reply is coming in, the box waits and Send becomes Stop.
+
+## Settings
+
+**Settings** is one switch for now: **Markdown**. On (the default), Cursor’s replies use headings, lists, and code. Off, you see the raw text. Your own messages stay plain either way.
+
+## Closing the window
+
+The thread lives in this window only. Closing it clears the page. Sign-in, the folder, and the Markdown switch come back.
