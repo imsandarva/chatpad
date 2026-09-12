@@ -10,6 +10,7 @@
   --send: #1a1916;
   --send-ink: #faf9f6;
   --send-disabled: #d4d0c8;
+  --danger: #b42318;
   --shadow: 0 1px 2px rgba(26, 25, 22, 0.04), 0 8px 24px rgba(26, 25, 22, 0.05);
   --shadow-focus: 0 1px 2px rgba(26, 25, 22, 0.06), 0 12px 32px rgba(26, 25, 22, 0.08);
   --font: "Ubuntu", "Cantarell", "Noto Sans", ui-sans-serif, system-ui, sans-serif;
@@ -40,6 +41,7 @@
     --send: #f0ede6;
     --send-ink: #161513;
     --send-disabled: #4a463e;
+    --danger: #f97066;
     --shadow: 0 1px 2px rgba(0, 0, 0, 0.2), 0 8px 24px rgba(0, 0, 0, 0.18);
     --shadow-focus: 0 1px 2px rgba(0, 0, 0, 0.24), 0 12px 32px rgba(0, 0, 0, 0.28);
   }

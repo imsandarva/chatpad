@@ -3,13 +3,13 @@
 ## Shape
 
 ```
-composer / transcript  →  @cursor/sdk (local)  →  Cursor agent
-        SvelteKit UI              TypeScript host         same as CLI/IDE
+composer / transcript  →  Tauri invoke  →  host/ (Node)  →  @cursor/sdk  →  Cursor
+        SvelteKit UI                         TypeScript host              same as CLI/IDE
               ↑
          Tauri 2 + WebKitGTK
 ```
 
-The UI owns input and display. Cursor owns the agent. Usage bills to the same plan as the IDE and CLI.
+The UI owns input and display. The host is the only process that imports `@cursor/sdk` — WebKit cannot run it. Credentials stay in `~/.cursor/sdk/auth.json`; the UI receives name and email only. Cursor owns the agent. Usage bills to the same plan as the IDE and CLI.
 
 ## Why this stack
 
@@ -29,7 +29,9 @@ Not used: Electron, Python/GTK for the app, Flutter (no first-party Cursor SDK).
 | `src/` | UI (SvelteKit) |
 | `src/routes/+page.svelte` | Thin entry — mounts the desk |
 | `src/lib/desk/` | Composes header, transcript, composer |
-| `src/lib/chrome/` | Window chrome (wordmark; login/folder later) |
+| `src/lib/chrome/` | Window chrome (wordmark; folder later) |
+| `src/lib/auth/` | Sign-in control and session state |
+| `host/` | Node host — `Cursor.auth.login()`, status, logout |
 | `src/lib/transcript/` | Conversation pane |
 | `src/lib/composer/` | Writing well (Send is idle) |
 | `src/lib/types/` | Shared shapes |
@@ -40,7 +42,7 @@ Not used: Electron, Python/GTK for the app, Flutter (no first-party Cursor SDK).
 
 App id: `com.chatpad.app`. Window title: Chatpad.
 
-The UI is a composition layer: routes wire modules, modules own one pane. Send does not call the agent yet.
+The UI is a composition layer: routes wire modules, modules own one pane. Login is wired. Send does not call the agent yet.
 
 ## Runtime dependencies
 

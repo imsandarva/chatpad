@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Account from "$lib/auth/Account.svelte";
   import Header from "$lib/chrome/Header.svelte";
   import Composer from "$lib/composer/Composer.svelte";
   import Transcript from "$lib/transcript/Transcript.svelte";
@@ -12,7 +13,9 @@
 </script>
 
 <div class="desk">
-  <Header />
+  <Header>
+    <Account />
+  </Header>
   <Transcript {messages} />
   <Composer bind:value={draft} onsend={send} />
 </div>

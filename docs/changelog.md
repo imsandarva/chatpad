@@ -11,6 +11,7 @@ Format: [Keep a Changelog](https://keepachangelog.com/). Versioning is informal 
 - Isolated toolchain: nvm Node 22, rustup 1.98, apt WebKit/GTK `-dev` packages.
 - Product, architecture, and setup docs.
 - Two-pane desk UI: empty transcript and a real composer (Send idle).
+- Cursor login in the header (`Cursor.auth.login()` via the Node host); shows who you are.
 
 ### Changed
 
