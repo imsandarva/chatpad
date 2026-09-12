@@ -1,6 +1,6 @@
 # Conversation
 
-The middle of the window is the thread. It reads like a normal chat: you on the right, Cursor on the left.
+The middle of the window is the thread. It reads like a normal chat: you on the right, Cursor on the left. The write box stays at the bottom of the window; only the thread moves.
 
 ## Empty
 

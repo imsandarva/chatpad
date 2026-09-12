@@ -1,6 +1,6 @@
 # Using Chatpad
 
-The window is a desk: header on top, conversation in the middle, composer at the bottom.
+The window is a desk: header on top, conversation in the middle, composer at the bottom. The write box stays put; only the thread scrolls.
 
 ## Sign in
 

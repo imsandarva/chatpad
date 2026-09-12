@@ -167,7 +167,7 @@
 
 <style>
   .dock {
-    flex: 0 0 auto;
+    min-width: 0;
     padding: 0.75rem 1.25rem 1.25rem;
   }
 

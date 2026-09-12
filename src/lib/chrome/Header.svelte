@@ -16,7 +16,6 @@
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
-    flex: 0 0 auto;
     height: 3.25rem;
     padding: 0 1.5rem;
     border-bottom: 1px solid var(--line);

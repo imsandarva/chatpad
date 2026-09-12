@@ -48,12 +48,13 @@
 </div>
 
 <style>
+  /* Header / thread / composer — minmax(0, 1fr) so the middle cannot grow the page. */
   .desk {
-    display: flex;
-    flex-direction: column;
-    flex: 1 1 0%;
-    min-height: 0;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    grid-template-columns: minmax(0, 1fr);
     height: 100%;
+    min-height: 0;
     overflow: hidden;
     background:
       radial-gradient(ellipse 80% 50% at 50% 0%, color-mix(in srgb, var(--ink) 3.5%, transparent), transparent 70%),

@@ -56,6 +56,8 @@ App id: `com.chatpad.app`. Window title: Chatpad.
 
 The UI is a composition layer: routes wire modules, modules own one pane. Login, folder, Send, Stop, Settings, and the chat thread are wired. Settings is a dialog. Markdown is on by default for Cursor’s replies. Your messages sit on the right; Cursor’s sit on the left.
 
+The window is a frame, not a page: `html`/`body` are fixed to the webview, and the desk is three grid rows — header, a `minmax(0, 1fr)` thread that scrolls, and the composer. A flex column lets WebKitGTK size the middle from its content and bury the write box.
+
 On Linux the composer asks Rust for pictures the page cannot see: GTK clipboard for a copy, and `read_pictures` for a drop or a file URI. `dragDropEnabled` stays on so Tauri’s `onDragDropEvent` fires.
 
 The window starts one Node host and keeps it. The first send creates (or resumes) a local agent; later sends reuse that handle. Text deltas and tool-call rows come back as NDJSON, Rust emits `agent-event`, and the transcript appends them. A folder change disposes and opens a new agent. Stop writes a cancel line; partial text and work stay. Detail is in [agent](./agent.md).
