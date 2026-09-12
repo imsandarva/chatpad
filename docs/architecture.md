@@ -32,7 +32,7 @@ Not used: Electron, Python/GTK for the app, Flutter (no first-party Cursor SDK).
 | `src/lib/chrome/` | Window chrome (wordmark, shared header controls) |
 | `src/lib/auth/` | Sign-in control, remembered name, session state |
 | `src/lib/workspace/` | Stored project folder (`cwd` for the agent) |
-| `host/` | Node host — login, `Agent.create` / `send` stream, and `run.cancel()` |
+| `host/` | Durable Node host — login, one live `Agent`, `send` / `run.cancel()` |
 | `src/lib/transcript/` | Conversation pane |
 | `src/lib/agent/` | Send, Stop, and stream listener |
 | `src/lib/conversation/` | Transcript messages and agent id |
@@ -40,6 +40,7 @@ Not used: Electron, Python/GTK for the app, Flutter (no first-party Cursor SDK).
 | `src/lib/types/` | Shared shapes |
 | `src/app.css` | Tokens and reset |
 | `src-tauri/` | Native window (Rust crate `chatpad` / `chatpad_lib`) |
+| `src-tauri/src/host.rs` | Keeps one Node process warm for the window |
 | `src-tauri/src/auth_store.rs` | Local `auth.json` status — no key leaves the file |
 | `node_modules/` | JS/TS packages from `npm install` |
 | `src-tauri/target/` | Rust build output |
@@ -48,9 +49,9 @@ App id: `com.chatpad.app`. Window title: Chatpad.
 
 The UI is a composition layer: routes wire modules, modules own one pane. Login, folder, Send, and Stop are wired.
 
-Send runs `Agent.create({ local: { cwd } })` (or `Agent.resume`) in the Node host. Tokens come back as NDJSON, Rust emits `agent-event`, and the transcript appends them. Follow-ups reuse the same agent id for that folder.
+The window starts one Node host and keeps it. The first send creates (or resumes) a local agent; later sends call `agent.send()` on that same handle — the CLI shape. Tokens come back as NDJSON, Rust emits `agent-event`, and the transcript appends them. A folder change disposes and opens a new agent. Closing the agent after every turn was what made replies feel slower than the CLI.
 
-Stop writes a cancel line to the live host’s stdin (Escape does the same). The host calls `run.cancel()` on the official handle, the stream ends with `cancelled`, and partial text stays. Rust holds that stdin only while a send is active.
+Stop writes a cancel line to the host’s stdin (Escape does the same). The host calls `run.cancel()`, the stream ends with `cancelled`, and partial text stays.
 
 ## Runtime dependencies
 

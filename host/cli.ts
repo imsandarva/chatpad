@@ -1,12 +1,20 @@
 import { login, logout, readSession } from "./auth.ts";
-import { send } from "./agent.ts";
+import { createRuntime } from "./runtime.ts";
 import { openSendControl } from "./control.ts";
+import { serve } from "./serve.ts";
 
 const action = process.argv[2] ?? "status";
 
+if (action === "serve") {
+  await serve();
+  process.exit(0);
+}
+
 if (action === "send") {
   const { request, stop } = await openSendControl();
-  await send(request, stop);
+  const runtime = createRuntime();
+  await runtime.send(request, stop);
+  await runtime.dispose();
   process.exit(0);
 }
 

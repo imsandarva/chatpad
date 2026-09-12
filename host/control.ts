@@ -1,11 +1,6 @@
 import { createInterface } from "node:readline";
 import type { SendRequest } from "./agent.ts";
-
-/** Trips once — from a cancel line on stdin, or SIGTERM / SIGINT. */
-export type StopGate = {
-  readonly requested: boolean;
-  readonly when: Promise<void>;
-};
+import { createStopGate, type StopGate } from "./stop.ts";
 
 /** First stdin line is the send request; later lines are control messages. */
 export async function openSendControl(): Promise<{ request: SendRequest; stop: StopGate }> {
@@ -19,27 +14,16 @@ export async function openSendControl(): Promise<{ request: SendRequest; stop: S
     rl.once("close", fail);
   });
 
-  let requested = false;
-  let release = () => {};
-  const when = new Promise<void>((resolve) => {
-    release = resolve;
-  });
-
-  const trip = () => {
-    if (requested) return;
-    requested = true;
-    release();
-  };
-
+  const stop = createStopGate();
   rl.on("line", (line) => {
     try {
-      if ((JSON.parse(line) as { type?: string }).type === "cancel") trip();
+      if ((JSON.parse(line) as { type?: string }).type === "cancel") stop.trip();
     } catch {
       /* ignore a bad control line */
     }
   });
-  process.once("SIGTERM", trip);
-  process.once("SIGINT", trip);
+  process.once("SIGTERM", stop.trip);
+  process.once("SIGINT", stop.trip);
 
-  return { request: JSON.parse(first) as SendRequest, stop: { get requested() { return requested; }, when } };
+  return { request: JSON.parse(first) as SendRequest, stop };
 }
