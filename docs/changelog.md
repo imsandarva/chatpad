@@ -26,6 +26,7 @@ Format: [Keep a Changelog](https://keepachangelog.com/). Versioning is informal 
 
 ### Fixed
 
+- The model list was clipped by the write box, so only Composer showed. It now sits in the window and scrolls through Cursor’s full catalog.
 - Pasting a copied picture and dropping one from the file manager now attach in the composer. WebKitGTK never handed those to the page; the window reads them natively.
 - The thread scrolls again as it grows — wheel, trackpad, and keys — and only follows new words while you are at the bottom.
 - The write box stays on the window. The thread no longer grows the page and hides it.

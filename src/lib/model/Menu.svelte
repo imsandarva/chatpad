@@ -8,13 +8,16 @@
   let query = $state("");
   let cursor = $state(0);
   let field: HTMLInputElement | undefined = $state();
+  let list: HTMLDivElement | undefined = $state();
 
   const shown = $derived(model.rows.filter((row) => matches(row, query)));
   const counts = $derived(shown.reduce<Record<string, number>>((acc, row) => { acc[row.group] = (acc[row.group] ?? 0) + 1; return acc; }, {}));
 
   $effect(() => {
     cursor = Math.min(cursor, Math.max(0, shown.length - 1));
-    document.getElementById(shown[cursor]?.key ?? "")?.scrollIntoView({ block: "nearest" });
+    const key = shown[cursor]?.key;
+    if (!key || !list) return;
+    list.querySelector(`[data-key="${CSS.escape(key)}"]`)?.scrollIntoView({ block: "nearest" });
   });
 
   $effect(() => {
@@ -46,7 +49,7 @@
     <p class="hint">Looking up your models…</p>
   {/if}
 
-  <div class="list">
+  <div class="list" bind:this={list}>
     {#if !shown.length}
       <p class="hint empty">Nothing matches.</p>
     {:else}
@@ -64,9 +67,8 @@
   .menu {
     display: flex;
     flex-direction: column;
-    min-width: 16.5rem;
-    max-width: min(20.5rem, calc(100vw - 1.5rem));
-    max-height: min(22rem, calc(100vh - 6.5rem));
+    height: 100%;
+    min-height: 0;
     padding: 0.45rem;
     border: 1px solid var(--well-edge);
     border-radius: 0.85rem;
@@ -76,6 +78,7 @@
   }
 
   .find {
+    flex: 0 0 auto;
     width: 100%;
     height: 2rem;
     margin: 0 0 0.3rem;
@@ -92,6 +95,7 @@
   .find::placeholder { color: var(--ink-soft); opacity: 0.8; }
 
   .list {
+    flex: 1 1 auto;
     min-height: 0;
     overflow-y: auto;
     scrollbar-width: thin;
@@ -107,6 +111,7 @@
   }
 
   .hint {
+    flex: 0 0 auto;
     margin: 0.15rem 0.45rem 0.4rem;
     font-size: 0.75rem;
     line-height: 1.4;

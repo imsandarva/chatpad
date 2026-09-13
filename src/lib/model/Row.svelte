@@ -15,7 +15,7 @@
   class:on={current}
   class:go={active}
   role="option"
-  id={option.key}
+  data-key={option.key}
   aria-selected={current}
   onclick={onpick}
 >

@@ -2,21 +2,32 @@
   import { conversation } from "$lib/conversation/conversation.svelte";
   import { faceOf, model, warmCatalog } from "./model.svelte";
   import Menu from "./Menu.svelte";
+  import { above } from "./place";
 
   let open = $state(false);
   let root: HTMLDivElement | undefined = $state();
+  let face: HTMLButtonElement | undefined = $state();
+  let box = $state({ left: 0, bottom: 0, width: 328, maxHeight: 352 });
   const locked = $derived(conversation.busy);
+
+  function layout() {
+    if (face) box = above(face);
+  }
 
   function toggle() {
     if (locked) return;
     open = !open;
-    if (open) void warmCatalog(true);
+    if (open) {
+      layout();
+      void warmCatalog(true);
+    }
   }
 
   function close() { open = false; }
 
   $effect(() => {
     if (!open) return;
+    layout();
     const onptr = (event: PointerEvent) => {
       if (root && !root.contains(event.target as Node)) close();
     };
@@ -25,9 +36,11 @@
     };
     window.addEventListener("pointerdown", onptr);
     window.addEventListener("keydown", onkey);
+    window.addEventListener("resize", layout);
     return () => {
       window.removeEventListener("pointerdown", onptr);
       window.removeEventListener("keydown", onkey);
+      window.removeEventListener("resize", layout);
     };
   });
 </script>
@@ -36,6 +49,7 @@
   <button
     type="button"
     class="face"
+    bind:this={face}
     aria-haspopup="listbox"
     aria-expanded={open}
     aria-label="Model"
@@ -47,7 +61,9 @@
     <span class="chev" aria-hidden="true"></span>
   </button>
   {#if open}
-    <div class="pop"><Menu onclose={close} /></div>
+    <div class="pop" style="left:{box.left}px;bottom:{box.bottom}px;width:{box.width}px;height:{box.maxHeight}px">
+      <Menu onclose={close} />
+    </div>
   {/if}
 </div>
 
@@ -106,10 +122,10 @@
   }
 
   .pop {
-    position: absolute;
-    left: 0;
-    bottom: calc(100% + 0.45rem);
-    z-index: 8;
+    position: fixed;
+    z-index: 40;
+    display: flex;
+    flex-direction: column;
   }
 
   .off { pointer-events: none; }

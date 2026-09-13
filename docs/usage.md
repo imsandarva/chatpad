@@ -31,7 +31,7 @@ The box at the bottom is a real text field. Type as you would anywhere else.
 
 Send is quiet until there is something to send — a note, a picture, or both. Paste a picture from the clipboard, drop one from a folder, or tap **+**. You’ll see a thumbnail; take it off with the little close mark if you change your mind.
 
-The name on the lower left of the write box is who writes back. Tap it to see the models on your Cursor plan — Composer, Auto, Claude, and the rest that Cursor offers you. Search if the list is long. The next send uses what you pick. You cannot change it while a reply is still coming.
+The name on the lower left of the write box is who writes back. Tap it to see every model on your Cursor plan — Auto, Composer, Claude, GPT, Gemini, Grok, and the rest Cursor offers you. Scroll the list, or search if you know the name. The next send uses what you pick. You cannot change it while a reply is still coming.
 
 While a reply is coming in, the box stays yours. Keep writing. Send holds that next note until this turn finishes, then sends it. **Keep** puts it back in the box if you change your mind. Stop and Escape still end the reply that is already on the page. Commands and file work appear as quiet lines in Cursor’s turn — tap one to sit with the command or see the path — then the reply. Hover a bubble, a work line, or a code block and tap **Copy** to take it with you — or select just a piece, the way you would anywhere else. Scroll the thread to look back — wheel, trackpad, the bar on the right, or Page Up and Page Down. Tap or drag that bar to jump; Home and End go to the ends. It keeps following only if you stay at the bottom.
 

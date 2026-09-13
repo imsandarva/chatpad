@@ -57,6 +57,13 @@ pub async fn cursor_session(action: String) -> Result<Session, String> {
         .map_err(|err| err.to_string())?
 }
 
+fn last_object(stdout: &[u8]) -> Result<serde_json::Value, String> {
+    let text = String::from_utf8_lossy(stdout);
+    let line = text.lines().rev().find(|row| row.trim().starts_with('{'))
+        .ok_or_else(|| "couldn’t load models".to_string())?;
+    serde_json::from_str(line).map_err(|err| format!("bad host response: {err}"))
+}
+
 fn run_models() -> Result<serde_json::Value, String> {
     let output = node_host()
         .arg("models")
@@ -68,7 +75,7 @@ fn run_models() -> Result<serde_json::Value, String> {
         return Err(stderr.trim().if_empty("couldn’t load models").to_string());
     }
 
-    serde_json::from_slice(&output.stdout).map_err(|err| format!("bad host response: {err}"))
+    last_object(&output.stdout)
 }
 
 /// Live catalog for this account (`Cursor.models.list()`). The page never sees the key.

@@ -41,7 +41,7 @@ Not used: Electron, Python/GTK for the app, Flutter (no first-party Cursor SDK).
 | `src/lib/transcript/` | Conversation pane — `Transcript` lists, `follow` keeps the latest in view, `Turn` aligns, `Work` shows the steps and opens one a little, `Body` renders |
 | `src/lib/copy/` | Copy a bubble, a work line, or a code block — `write` talks to the clipboard |
 | `src/lib/scroll/` | Thread rail — `Track` draws the bar, `geometry` sizes the handle, `bind` paints on scroll without a render |
-| `src/lib/model/` | Live Cursor catalog (`Cursor.models.list()`), last pick, write-box picker |
+| `src/lib/model/` | Live Cursor catalog (`Cursor.models.list()`), last pick, write-box picker (fixed above the box so the desk cannot clip it) |
 | `src/lib/settings/` | Settings sheet — markdown |
 | `src/lib/markdown/` | Safe markdown render (`marked` + DOMPurify) |
 | `src/lib/agent/` | Send, Stop, and stream listener |

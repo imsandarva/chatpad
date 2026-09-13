@@ -1,4 +1,4 @@
-import type { CatalogItem, ModelParam, ModelSelection, Option } from "./types";
+import type { CatalogItem, ModelSelection, Option } from "./types";
 
 export const FALLBACK: ModelSelection = { id: "composer-2.5" };
 
@@ -14,7 +14,6 @@ const legacy: Record<string, ModelSelection> = {
   auto: { id: "default" },
 };
 
-/** One row per model — variants share a name, so the list matches by id. */
 export function same(a: ModelSelection, b: ModelSelection): boolean {
   return a.id === b.id;
 }
@@ -52,25 +51,16 @@ function family(item: CatalogItem): string {
   return item.label;
 }
 
-function defaults(item: CatalogItem): ModelParam[] | undefined {
-  const chosen = item.variants?.find((row) => row.def) ?? item.variants?.[0];
-  return chosen?.params.length ? chosen.params : undefined;
-}
-
-/** One row per model. The default variant’s params go with the send. */
 export function flatten(items: readonly CatalogItem[]): Option[] {
-  return items.map((item) => {
-    const params = defaults(item);
-    return {
-      key: item.id,
-      id: item.id,
-      params,
-      label: item.label,
-      note: item.hint,
-      group: family(item),
-      aliases: item.aliases,
-    };
-  });
+  return items.map((item) => ({
+    key: item.id,
+    id: item.id,
+    params: item.params,
+    label: item.label,
+    note: item.hint,
+    group: family(item),
+    aliases: item.aliases,
+  }));
 }
 
 export function face(opt: Option): string {
