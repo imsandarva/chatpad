@@ -52,4 +52,4 @@ Cursor’s replies can render as Markdown (see [usage](./usage.md)). Yours do no
 
 Each folder can keep more than one conversation. Close the window and open it again: you are back on the page you left. **New** puts that day away and opens a blank page in the same folder — a new note, not a follow-up. **Earlier** brings an old one back. Pick another folder and you get that folder’s pages, or a blank page if you have not written there yet.
 
-A send on a new page starts a new agent. The old one stays with the day you parked. Changing the model in Settings does the same for the next send — a new agent, same page.
+A send on a new page starts a new agent. The old one stays with the day you parked. Changing the model in the write box does the same for the next send — a new agent, same page.

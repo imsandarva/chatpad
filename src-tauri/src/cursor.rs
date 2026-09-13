@@ -56,3 +56,25 @@ pub async fn cursor_session(action: String) -> Result<Session, String> {
         .await
         .map_err(|err| err.to_string())?
 }
+
+fn run_models() -> Result<serde_json::Value, String> {
+    let output = node_host()
+        .arg("models")
+        .output()
+        .map_err(|err| format!("could not start node: {err}"))?;
+
+    if !output.status.success() {
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        return Err(stderr.trim().if_empty("couldn’t load models").to_string());
+    }
+
+    serde_json::from_slice(&output.stdout).map_err(|err| format!("bad host response: {err}"))
+}
+
+/// Live catalog for this account (`Cursor.models.list()`). The page never sees the key.
+#[tauri::command]
+pub async fn cursor_models() -> Result<serde_json::Value, String> {
+    tauri::async_runtime::spawn_blocking(run_models)
+        .await
+        .map_err(|err| err.to_string())?
+}

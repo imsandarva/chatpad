@@ -22,6 +22,6 @@ The composer is the product. The rest of the window exists so writing has somewh
 
 ## Now, and next
 
-The first useful cut is in: sign in, pick a folder, write, get a streamed reply, and Stop. Pick Composer, Faster, or Auto in Settings. Markdown can be on or off. The thread is a normal chat, the work — commands, edits, reads — shows in the same turn, and that thread comes back when you open the window. New starts a fresh page in the same folder; the old day stays under Earlier. You can keep writing while a reply is still coming, Copy takes a bubble, a command, or a block of code, and a work line opens a little if you want to sit with it.
+The first useful cut is in: sign in, pick a folder, write, get a streamed reply, and Stop. Pick who writes back from the write box — Cursor’s live list for your account. Markdown can be on or off. The thread is a normal chat, the work — commands, edits, reads — shows in the same turn, and that thread comes back when you open the window. New starts a fresh page in the same folder; the old day stays under Earlier. You can keep writing while a reply is still coming, Copy takes a bubble, a command, or a block of code, and a work line opens a little if you want to sit with it.
 
 The long aim is that this desk can do what the CLI can do — run the same agent, on the same machine — without asking you to type inside a TUI.

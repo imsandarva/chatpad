@@ -4,6 +4,7 @@
   import { autosize } from "./autosize";
   import { filesFrom, MAX_PICS, release, toDraft, type DraftPic } from "./images";
   import { clipboardAttach, filesFromPaths, listenFileDrop, type NativePics } from "./native";
+  import Picker from "$lib/model/Picker.svelte";
   import { queue } from "./queue.svelte";
   import Thumbs from "./Thumbs.svelte";
   import Waiting from "./Waiting.svelte";
@@ -164,8 +165,11 @@
       {onpaste}
     ></textarea>
     <div class="bar">
-      <input class="sr" type="file" accept="image/png,image/jpeg,image/webp,image/gif" multiple bind:this={picker} onchange={() => { if (picker?.files) void take(filesFrom(picker.files)); if (picker) picker.value = ""; }} />
-      <button type="button" class="add" aria-label="Add a picture" onclick={() => picker?.click()}>+</button>
+      <div class="tools">
+        <input class="sr" type="file" accept="image/png,image/jpeg,image/webp,image/gif" multiple bind:this={picker} onchange={() => { if (picker?.files) void take(filesFrom(picker.files)); if (picker) picker.value = ""; }} />
+        <button type="button" class="add" aria-label="Add a picture" onclick={() => picker?.click()}>+</button>
+        <Picker />
+      </div>
       {#if busy}
         <button type="button" class="stop" class:side={canSend} disabled={stopping} aria-label="Stop this reply" onclick={onstop}>{stopping ? "Stopping" : "Stop"}</button>
       {/if}
@@ -176,11 +180,15 @@
 
 <style>
   .dock {
+    position: relative;
+    overflow: visible;
     min-width: 0;
     padding: 0.75rem 1.25rem 1.25rem;
   }
 
   .well {
+    position: relative;
+    overflow: visible;
     max-width: var(--measure);
     margin: 0 auto;
     padding: 0.85rem 0.95rem 0.7rem;
@@ -239,8 +247,15 @@
     margin-top: 0.55rem;
   }
 
-  .add {
+  .tools {
+    display: flex;
+    align-items: center;
+    gap: 0.1rem;
+    min-width: 0;
     margin-right: auto;
+  }
+
+  .add {
     width: 2rem;
     padding: 0;
     background: transparent;

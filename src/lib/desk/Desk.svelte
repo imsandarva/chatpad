@@ -1,16 +1,18 @@
 <script lang="ts">
   import { sendPrompt, startAgentListener, stopPrompt } from "$lib/agent/chat";
   import Account from "$lib/auth/Account.svelte";
+  import { auth } from "$lib/auth/session.svelte";
   import Header from "$lib/chrome/Header.svelte";
   import Composer from "$lib/composer/Composer.svelte";
   import { MAX_PICS, release, type DraftPic } from "$lib/composer/images";
   import { offer, take } from "$lib/composer/queue.svelte";
   import { conversation } from "$lib/conversation/conversation.svelte";
-  import { openFolder, startPersistence } from "$lib/conversation/persist";
   import Earlier from "$lib/conversation/Earlier.svelte";
   import New from "$lib/conversation/New.svelte";
-  import Transcript from "$lib/transcript/Transcript.svelte";
+  import { openFolder, startPersistence } from "$lib/conversation/persist";
+  import { forgetCatalog, warmCatalog } from "$lib/model/model.svelte";
   import Settings from "$lib/settings/Settings.svelte";
+  import Transcript from "$lib/transcript/Transcript.svelte";
   import Folder from "$lib/workspace/Folder.svelte";
   import { workspace } from "$lib/workspace/workspace.svelte";
   import { onMount } from "svelte";
@@ -29,6 +31,11 @@
   $effect(() => {
     if (!workspace.ready) return;
     void openFolder(workspace.cwd);
+  });
+
+  $effect(() => {
+    if (auth.session.status === "logged-in") void warmCatalog();
+    else forgetCatalog();
   });
 
   function send() {

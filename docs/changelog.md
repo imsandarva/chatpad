@@ -6,7 +6,7 @@ Format: [Keep a Changelog](https://keepachangelog.com/). Versioning is informal 
 
 ### Added
 
-- Settings lets you pick Composer, Faster, or Auto — the next send uses it.
+- The write box lists the models on your Cursor plan — Composer, Auto, Claude, and the rest Cursor offers you. Search, pick, and the next send uses it.
 - A work line opens a little — sit with the command, or see the path. Not a diff.
 - Copy on a bubble, a work line, or a code block — take the words without fighting the page.
 - The write box stays open while a reply is coming; Send holds the next note until this turn finishes.
@@ -32,6 +32,7 @@ Format: [Keep a Changelog](https://keepachangelog.com/). Versioning is informal 
 
 ### Changed
 
+- The model picker left Settings. Settings is only Markdown now.
 - You can paste or drop a picture in the composer, see a thumbnail, and send it with the message.
 - Cursor’s tool calls (shell, edits, and the rest) stream into the transcript as work rows.
 - Docs now cover the desk, the thread, and the agent path — not only setup.

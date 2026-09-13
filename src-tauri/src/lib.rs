@@ -26,6 +26,7 @@ pub fn run() {
             agent::cursor_stop,
             agent::cursor_dispose,
             cursor::cursor_session,
+            cursor::cursor_models,
             workspace::default_workspace,
             workspace::pick_workspace,
             pictures::read_pictures,

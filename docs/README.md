@@ -6,7 +6,7 @@ Start here if you are new: [overview](./overview.md), then [setup](./setup.md), 
 | --- | --- |
 | [overview.md](./overview.md) | What Chatpad is, and what it is not |
 | [setup.md](./setup.md) | Prerequisites and how to run the window |
-| [usage.md](./usage.md) | Sign in, pick a folder, write, send, stop, settings |
+| [usage.md](./usage.md) | Sign in, pick a folder, write, pick a model, send, stop, settings |
 | [conversation.md](./conversation.md) | The thread — left, right, markdown, stop, memory |
 | [agent.md](./agent.md) | How a send reaches the Cursor agent |
 | [architecture.md](./architecture.md) | Stack, folders, and why |

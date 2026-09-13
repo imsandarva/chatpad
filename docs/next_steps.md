@@ -12,7 +12,7 @@ The first useful cut is a desk: sign in, pick a folder, write, see the work, Sto
 
 **Open a work line a little.** Tap a command or a file. The words open in place. Not a diff viewer.
 
-**Pick a model in Settings.** Composer, Faster, or Auto. The next send uses it.
+**Pick a model in the write box.** Cursor’s live list for your account. The next send uses it.
 
 ## Do this next
 
